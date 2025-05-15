@@ -18,13 +18,13 @@ const SubscribeTask = () => {
     setStatus('loading');
 
     try {
-      const res = await fetch('http://localhost:4000/check-subscription', {
+      const response = await fetch('https://dapp-ton-backend.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
       if (data.subscribed) {
         setStatus('subscribed');
