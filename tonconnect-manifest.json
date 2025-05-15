@@ -1,0 +1,7 @@
+{
+  "url": "https://kirsumajas.github.io/dapp-ton",
+  "name": "Chekhovsky Choppa",
+  "manifestVersion": "1",
+  "bridgeUrl": "https://bridge.tonapi.io/bridge",
+  "platforms": ["ios", "android", "web"]
+}
