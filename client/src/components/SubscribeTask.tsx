@@ -18,7 +18,7 @@ const SubscribeTask = () => {
     setStatus('loading');
 
     try {
-      const response = await fetch('https://dapp-ton-backend.onrender.com', {
+      const response = await fetch('https://dapp-ton-backend.onrender.com/check-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
