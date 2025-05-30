@@ -1,27 +1,62 @@
-import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaTasks, FaImages } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
+import HomeIcon from './icons/Home';
+import TasksIcon from './icons/Tasks';
+import CollectionIcon from './icons/Collections';
+import WalletIcon from './icons/Wallet';
 
-const Navbar = () => {
-  const location = useLocation();
+interface Props {
+  className?: string;
+}
 
-  const isActive = (path: string) => location.pathname === path;
+export default function NavBar({ className = '' }: Props) {
+  const linkBase = 'flex flex-col items-center justify-center gap-2.5';
+  const iconBase = 'w-6 h-6 transition-colors duration-200';
+
+  const labelClass = (isActive: boolean) =>
+    `text-sm ${isActive ? 'font-bold text-accent-g' : 'font-normal text-white'}`;
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-white/10 backdrop-blur-md border-t border-white/10 text-white flex justify-around py-2">
-      <Link to="/" className="flex flex-col items-center text-sm transition-opacity duration-200 hover:opacity-100" style={{ opacity: isActive('/') ? 1 : 0.6 }}>
-        <FaHome className="text-xl" />
-        Home
-      </Link>
-      <Link to="/tasks" className="flex flex-col items-center text-sm transition-opacity duration-200 hover:opacity-100" style={{ opacity: isActive('/tasks') ? 1 : 0.6 }}>
-        <FaTasks className="text-xl" />
-        Tasks
-      </Link>
-      <Link to="/collection" className="flex flex-col items-center text-sm transition-opacity duration-200 hover:opacity-100" style={{ opacity: isActive('/collection') ? 1 : 0.6 }}>
-        <FaImages className="text-xl" />
-        Collection
-      </Link>
-    </nav>
-  );
-};
+    <footer
+      className={`w-full max-w-md mx-auto px-8 py-4 
+                  pb-[calc(3rem+env(safe-area-inset-bottom))] 
+                  min-h-[64px] bg-[#5555554c] backdrop-blur-[21px] 
+                  backdrop-brightness-100 flex justify-between items-end shadow-lg ${className}`}
+    >
+      <NavLink to="/" end className={linkBase}>
+        {({ isActive }) => (
+          <>
+            <HomeIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={labelClass(isActive)}>Home</div>
+          </>
+        )}
+      </NavLink>
 
-export default Navbar;
+      <NavLink to="/tasks" className={linkBase}>
+        {({ isActive }) => (
+          <>
+            <TasksIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={labelClass(isActive)}>Tasks</div>
+          </>
+        )}
+      </NavLink>
+
+      <NavLink to="/collection" className={linkBase}>
+        {({ isActive }) => (
+          <>
+            <CollectionIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={labelClass(isActive)}>Collections</div>
+          </>
+        )}
+      </NavLink>
+
+      <NavLink to="/wallet" className={linkBase}>
+        {({ isActive }) => (
+          <>
+            <WalletIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={labelClass(isActive)}>Wallet</div>
+          </>
+        )}
+      </NavLink>
+    </footer>
+  );
+}

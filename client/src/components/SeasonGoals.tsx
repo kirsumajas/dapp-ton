@@ -1,64 +1,87 @@
+// src/components/SeasonGoals.tsx
 import { useState } from 'react';
-import clsx from 'clsx';
+import { motion, LayoutGroup } from 'framer-motion';
 
-const goals = [
-  {
-    title: 'Early bird airdroop',
-    description: 'Launch App AND get 5 coins for free',
-    active: true,
-  },
-  {
-    title: 'Listing',
-    description: 'Get listed on top DEXs',
-    active: true,
-  },
-  {
-    title: 'NFT collection',
-    description: 'Launch our Chekhovsky NFT collection',
-  },
-  {
-    title: 'Proof of stake contract',
-    description: 'Introduce staking to reward holders',
-  },
+type Goal = { id: number; title: string };
+
+const initialGoals: Goal[] = [
+  { id: 1, title: 'Launch App & get 5 coins' },
+  { id: 2, title: 'Listing' },
+  { id: 3, title: 'NFT collection' },
+  { id: 4, title: 'Proof of stake contract' },
 ];
 
-export default function SeasonGoalsStack() {
-  const [activeIndex, setActiveIndex] = useState(0);
+export default function SeasonGoals() {
+  const [left, setLeft] = useState<Goal[]>(initialGoals);
+  const [right, setRight] = useState<Goal[]>([]);
+
+  const moveToRight = (goal: Goal) => {
+    setLeft((l) => l.filter((g) => g.id !== goal.id));
+    setRight((r) => [...r, goal]);
+  };
+
+  const moveToLeft = (goal: Goal) => {
+    setRight((r) => r.filter((g) => g.id !== goal.id));
+    setLeft((l) => [...l, goal]);
+  };
+
+  // tweak these to match your card height + gap
+  const CARD_SPACING = 16;   // px between cards
+  const CARD_HEIGHT = 60;    // px card height
+  const STACK_HEIGHT = initialGoals.length * (CARD_HEIGHT + CARD_SPACING);
 
   return (
-    <div className="w-full max-w-md mx-auto mt-8 relative">
-      {goals.map((goal, index) => {
-        const isActive = index === activeIndex;
-        const offset = isActive ? 0 : (index - activeIndex) * 40 + 60;
+    <LayoutGroup>
+      <div className="flex flex-col space-y-6 p-4">
+        {/* 👆 24px gap between stacks */}
 
-        return (
-          <div
-            key={index}
-            onClick={() => setActiveIndex(index)}
-            className={clsx(
-              'absolute left-0 right-0 mx-auto w-full transition-all duration-500 cursor-pointer',
-              'rounded-xl shadow-md bg-gray-200 overflow-hidden',
-              isActive ? 'z-10 scale-100' : 'z-0 scale-[0.98]'
-            )}
-            style={{ top: `${offset}px` }}
-          >
-            <div className="p-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-lg">{goal.title}</h3>
-                {goal.active && (
-                  <span className="w-3 h-3 bg-lime-400 rounded-full" />
-                )}
-              </div>
-              {isActive && (
-                <p className="mt-4 text-sm bg-black text-white py-2 px-4 rounded-md">
-                  {goal.description}
-                </p>
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+        {/* — Pending Stack — */}
+        <div
+          className="relative w-full"
+          style={{ height: STACK_HEIGHT }}
+        >
+          {left.map((goal, i) => (
+            <motion.div
+              key={goal.id}
+              layoutId={`goal-${goal.id}`}
+              onClick={() => moveToRight(goal)}
+              whileHover={{ scale: 1.02 }}
+              className="absolute left-0 right-0 bg-white rounded-lg shadow p-4 cursor-pointer text-black"
+              style={{
+                top: i * CARD_SPACING,
+                zIndex: left.length - i,
+                height: CARD_HEIGHT,
+              }}
+            >
+              {goal.title}
+            </motion.div>
+          ))}
+        </div>
+
+        {/* — Completed Stack — */}
+        <div
+          className="relative w-full"
+          style={{ height: STACK_HEIGHT }}
+        >
+          {right.map((goal, i) => (
+            <motion.div
+              key={goal.id}
+              layoutId={`goal-${goal.id}`}
+              onClick={() => moveToLeft(goal)}
+              whileHover={{ scale: 1.02 }}
+              className="absolute left-0 right-0 bg-white rounded-lg shadow p-4 cursor-pointer text-black"
+              style={{
+                top: i * CARD_SPACING,
+                zIndex: right.length - i,
+                height: CARD_HEIGHT,
+              }}
+            >
+              {goal.title}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </LayoutGroup>
   );
 }
 
