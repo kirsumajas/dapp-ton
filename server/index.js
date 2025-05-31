@@ -72,7 +72,7 @@ app.patch('/milestones/:id/status', (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ['active', 'in_progress', 'completed', 'failed'];
+  const validStatuses = ['in_progress', 'completed', 'failed'];
   if (!validStatuses.includes(status)) {
     return res.status(400).json({ error: 'Invalid status value' });
   }
