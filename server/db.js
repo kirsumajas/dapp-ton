@@ -1,3 +1,9 @@
+const Database = require('better-sqlite3');
+
+// Initialize database first
+const db = new Database('milestones.db');
+
+// Then run the schema setup
 db.exec(`
   CREATE TABLE IF NOT EXISTS milestones (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -8,3 +14,5 @@ db.exec(`
     deadline TEXT
   );
 `);
+
+module.exports = db;
