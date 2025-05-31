@@ -5,6 +5,7 @@ import OverlapWrapper from '../components/OverlapWrapper';
 import logo from '../assets/Logo.svg';
 import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
 import InfoCards from '../components/InfoCards';
+import ProgressCard from '../components/ProgressCard';
 
 export default function Home() {
   const [season, setSeason] = useState('Preseason');
@@ -61,7 +62,8 @@ export default function Home() {
       {/* Progress Bar*/}
       <section className="px-0 mb-10">
         <h2 className="text-xl font-bold text-white mb-4 px-3">Progress</h2>
-        
+          <ProgressCard season={season} />
+
       </section>
       
       <div className="h-[180px]"></div>

@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
+// Telegram subscription check
 app.post('/check-subscription', async (req, res) => {
   const { userId } = req.body;
 
@@ -29,7 +30,6 @@ app.post('/check-subscription', async (req, res) => {
     );
 
     const isMember = response.data.result.status !== 'left';
-
     res.json({ subscribed: isMember });
   } catch (error) {
     console.error('Error checking subscription:', error.response?.data || error.message);
@@ -37,10 +37,7 @@ app.post('/check-subscription', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
+// Get milestones (optionally filtered by season)
 app.get('/milestones', (req, res) => {
   const { season } = req.query;
   const stmt = season
@@ -50,19 +47,23 @@ app.get('/milestones', (req, res) => {
   res.json(milestones);
 });
 
-// Add a new milestone
+// Add a new milestone (with optional status)
 app.post('/milestones', (req, res) => {
-  const { season, title, description, deadline } = req.body;
+  const { season, title, description, deadline, status = 'active' } = req.body;
 
+  const validStatuses = ['active', 'in_progress', 'completed', 'failed'];
   if (!season || !title) {
     return res.status(400).json({ error: 'season and title are required' });
   }
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: 'Invalid status value' });
+  }
 
   const stmt = db.prepare(`
-    INSERT INTO milestones (season, title, description, deadline)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO milestones (season, title, description, deadline, status)
+    VALUES (?, ?, ?, ?, ?)
   `);
-  const info = stmt.run(season, title, description, deadline);
+  const info = stmt.run(season, title, description, deadline, status);
   res.json({ id: info.lastInsertRowid });
 });
 
@@ -79,4 +80,8 @@ app.patch('/milestones/:id/status', (req, res) => {
   const stmt = db.prepare('UPDATE milestones SET status = ? WHERE id = ?');
   const result = stmt.run(status, id);
   res.json({ updated: result.changes > 0 });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
