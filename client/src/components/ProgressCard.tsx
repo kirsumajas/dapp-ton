@@ -32,16 +32,24 @@ export default function ProgressCard({ season }: ProgressCardProps) {
   }, [season]);
 
   const completedRatio = planned > 0 ? completed / planned : 0;
+  const failedRatio = planned > 0 ? failed / planned : 0;
 
   return (
     <div className="bg-[#2e2c33] rounded-xl p-4 mx-3 text-white text-sm space-y-3">
       <div className="font-bold text-gray-400">Progress</div>
 
-      {/* Progress Bar */}
-      <div className="w-full h-5 bg-gray-600 rounded overflow-hidden">
+      {/* Stacked Progress Bar */}
+      <div className="w-full h-5 bg-gray-600 rounded overflow-hidden relative">
         <div
-          className="h-full bg-accent-g transition-all duration-500"
+          className="h-full bg-accent-g absolute left-0 top-0 transition-all duration-500"
           style={{ width: `${completedRatio * 100}%` }}
+        />
+        <div
+          className="h-full bg-red-500 absolute top-0 transition-all duration-500"
+          style={{
+            left: `${completedRatio * 100}%`,
+            width: `${failedRatio * 100}%`,
+          }}
         />
       </div>
 
@@ -62,4 +70,3 @@ export default function ProgressCard({ season }: ProgressCardProps) {
     </div>
   );
 }
-

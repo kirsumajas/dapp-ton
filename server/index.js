@@ -51,7 +51,7 @@ app.get('/milestones', (req, res) => {
 app.post('/milestones', (req, res) => {
   const { season, title, description, deadline, status = 'active' } = req.body;
 
-  const validStatuses = ['active', 'in_progress', 'completed', 'failed'];
+  const validStatuses = ['in_progress', 'completed', 'failed'];
   if (!season || !title) {
     return res.status(400).json({ error: 'season and title are required' });
   }

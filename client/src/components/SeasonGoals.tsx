@@ -1,87 +1,48 @@
-// src/components/SeasonGoals.tsx
-import { useState } from 'react';
-import { motion, LayoutGroup } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-type Goal = { id: number; title: string };
-
-const initialGoals: Goal[] = [
-  { id: 1, title: 'Launch App & get 5 coins' },
-  { id: 2, title: 'Listing' },
-  { id: 3, title: 'NFT collection' },
-  { id: 4, title: 'Proof of stake contract' },
-];
-
-export default function SeasonGoals() {
-  const [left, setLeft] = useState<Goal[]>(initialGoals);
-  const [right, setRight] = useState<Goal[]>([]);
-
-  const moveToRight = (goal: Goal) => {
-    setLeft((l) => l.filter((g) => g.id !== goal.id));
-    setRight((r) => [...r, goal]);
-  };
-
-  const moveToLeft = (goal: Goal) => {
-    setRight((r) => r.filter((g) => g.id !== goal.id));
-    setLeft((l) => [...l, goal]);
-  };
-
-  // tweak these to match your card height + gap
-  const CARD_SPACING = 16;   // px between cards
-  const CARD_HEIGHT = 60;    // px card height
-  const STACK_HEIGHT = initialGoals.length * (CARD_HEIGHT + CARD_SPACING);
-
-  return (
-    <LayoutGroup>
-      <div className="flex flex-col space-y-6 p-4">
-        {/* 👆 24px gap between stacks */}
-
-        {/* — Pending Stack — */}
-        <div
-          className="relative w-full"
-          style={{ height: STACK_HEIGHT }}
-        >
-          {left.map((goal, i) => (
-            <motion.div
-              key={goal.id}
-              layoutId={`goal-${goal.id}`}
-              onClick={() => moveToRight(goal)}
-              whileHover={{ scale: 1.02 }}
-              className="absolute left-0 right-0 bg-white rounded-lg shadow p-4 cursor-pointer text-black"
-              style={{
-                top: i * CARD_SPACING,
-                zIndex: left.length - i,
-                height: CARD_HEIGHT,
-              }}
-            >
-              {goal.title}
-            </motion.div>
-          ))}
-        </div>
-
-        {/* — Completed Stack — */}
-        <div
-          className="relative w-full"
-          style={{ height: STACK_HEIGHT }}
-        >
-          {right.map((goal, i) => (
-            <motion.div
-              key={goal.id}
-              layoutId={`goal-${goal.id}`}
-              onClick={() => moveToLeft(goal)}
-              whileHover={{ scale: 1.02 }}
-              className="absolute left-0 right-0 bg-white rounded-lg shadow p-4 cursor-pointer text-black"
-              style={{
-                top: i * CARD_SPACING,
-                zIndex: right.length - i,
-                height: CARD_HEIGHT,
-              }}
-            >
-              {goal.title}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </LayoutGroup>
-  );
+interface SeasonGoalsProps {
+  season: string;
 }
 
+interface Goal {
+  id: number;
+  title: string;
+  description: string;
+}
+
+export default function SeasonGoals({ season }: SeasonGoalsProps) {
+  const [goals, setGoals] = useState<Goal[]>([]);
+
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const response = await axios.get(
+          `https://dapp-ton-backend.onrender.com/goals?season=${encodeURIComponent(season)}`
+        );
+        setGoals(response.data);
+      } catch (error) {
+        console.error('Failed to fetch goals:', error);
+      }
+    };
+
+    fetchGoals();
+  }, [season]);
+
+  return (
+    <section className="px-3 mb-10">
+      <h2 className="text-xl font-bold text-white mb-4">Season Goals</h2>
+      <div className="flex flex-col gap-3">
+        {goals.map(goal => (
+          <div
+            key={goal.id}
+            className="bg-[#2e2c33] rounded-xl p-4 text-white"
+          >
+            <h3 className="font-bold text-lg mb-1">{goal.title}</h3>
+            <p className="text-sm text-white/80">{goal.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

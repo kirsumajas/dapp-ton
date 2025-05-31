@@ -6,6 +6,7 @@ import logo from '../assets/Logo.svg';
 import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
 import InfoCards from '../components/InfoCards';
 import ProgressCard from '../components/ProgressCard';
+import SeasonGoals from '../components/SeasonGoals';
 
 export default function Home() {
   const [season, setSeason] = useState('Preseason');
@@ -37,34 +38,30 @@ export default function Home() {
         <InfoCards />
       </section>
 
+      {/* Progress Bar*/}
+      <section className="px-0 mb-10">
+          <ProgressCard season={season} />
+      </section>
+
       {/* Milestones */}
       <section className="px-0 mb-10">
         <h2 className="text-xl font-bold text-white mb-4 px-3">Milestones</h2>
         <SeasonTabs activeSeason={season} onSelect={setSeason} />
         <OverlapWrapper season={season} />
       </section>
-      <div className="h-[180px]"></div>
+      
+      {/* Spacer */}
+      <div className="h-[40px]"></div>
+
+      
+
+
       {/* Season Goals */}
       <section className="px-0 mb-10">
-        <h2 className="text-xl font-bold text-white mb-4 px-3">Season Goals</h2>
-        <div className="px-3">
-          <p className="text-white/70 text-sm mb-2">
-            Season goals are a set of objectives that the Chekhovsky Choppa team aims to achieve in each season.
-          </p>
-          <ul className="list-disc pl-5 text-white/70 text-sm space-y-1">
-            <li>Expand community engagement</li>
-            <li>Increase token utility</li>
-            <li>Launch new features</li>
-          </ul>
-        </div>
+        <SeasonGoals season={season} />
       </section>
       
-      {/* Progress Bar*/}
-      <section className="px-0 mb-10">
-        <h2 className="text-xl font-bold text-white mb-4 px-3">Progress</h2>
-          <ProgressCard season={season} />
-
-      </section>
+      
       
       <div className="h-[180px]"></div>
       {/* Footer */}
