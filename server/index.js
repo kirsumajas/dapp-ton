@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
+const axios = require('axios');
 const db = require('./db');
 
 const app = express();
@@ -37,7 +37,7 @@ app.post('/check-subscription', async (req, res) => {
   }
 });
 
-// Get milestones (optionally filtered by season)
+// Get milestones
 app.get('/milestones', (req, res) => {
   const { season } = req.query;
   const stmt = season
@@ -47,9 +47,9 @@ app.get('/milestones', (req, res) => {
   res.json(milestones);
 });
 
-// Add a new milestone (with optional status)
+// Add milestone
 app.post('/milestones', (req, res) => {
-  const { season, title, description, deadline, status = 'active' } = req.body;
+  const { season, title, description, deadline, status = 'in_progress' } = req.body;
 
   const validStatuses = ['in_progress', 'completed', 'failed'];
   if (!season || !title) {
@@ -82,10 +82,6 @@ app.patch('/milestones/:id/status', (req, res) => {
   res.json({ updated: result.changes > 0 });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
 // Get user balance
 app.get('/balance/:telegramId', (req, res) => {
   const { telegramId } = req.params;
@@ -94,14 +90,14 @@ app.get('/balance/:telegramId', (req, res) => {
 
   if (!user) {
     const insert = db.prepare('INSERT INTO users (telegram_id, balance) VALUES (?, 0)');
-    insert.run(telegramId, 0);
+    insert.run(telegramId);
     return res.json({ balance: 0 });
   }
 
   res.json({ balance: user.balance });
 });
 
-// Update user balance (e.g., earn reward)
+// Update balance (e.g., earn coins)
 app.post('/balance/update', (req, res) => {
   const { telegramId, amount } = req.body;
 
@@ -117,4 +113,12 @@ app.post('/balance/update', (req, res) => {
 
   const updated = db.prepare('SELECT balance FROM users WHERE telegram_id = ?').get(telegramId);
   res.json({ balance: updated.balance });
+});
+
+// Withdraw route (separated)
+const withdrawRoute = require('./routes/withdraw');
+app.use(withdrawRoute);
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

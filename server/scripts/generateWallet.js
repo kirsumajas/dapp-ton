@@ -1,25 +1,25 @@
-const { mnemonicNew, mnemonicToPrivateKey, WalletContractV4, TonClient } = require('ton');
-const { writeFileSync } = require('fs');
+const { mnemonicNew, mnemonicToPrivateKey } = require('@ton/crypto');
+const { WalletContractV4 } = require('@ton/ton');
+const { TonClient, fromNano } = require('@ton/ton');
 
-async function main() {
-  const client = new TonClient({ endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC' }); // or mainnet
-
-  // Generate 24-word mnemonic
+(async () => {
+  // 1. Generate mnemonic and keypair
   const mnemonic = await mnemonicNew();
-
-  // Get private key
   const keyPair = await mnemonicToPrivateKey(mnemonic);
-  const wallet = WalletContractV4.create({ publicKey: keyPair.publicKey, workchain: 0 });
 
+  // 2. Create a Wallet V4 contract
+  const wallet = WalletContractV4.create({
+    workchain: 0,
+    publicKey: keyPair.publicKey,
+  });
+
+  // 3. Get the address
   const address = wallet.address.toString();
+  console.log('Mnemonic:', mnemonic.join(' '));
+  console.log('Wallet Address:', address);
 
-  // Save to .env format
-  const env = `TREASURY_MNEMONIC="${mnemonic.join(' ')}"\nTREASURY_ADDRESS="${address}"\n`;
-  writeFileSync('.env.treasury', env);
-
-  console.log('✅ New treasury wallet generated!');
-  console.log('Address:', address);
-  console.log('Mnemonic saved to .env.treasury');
-}
-
-main();
+  // 4. Optionally connect to testnet and check balance
+  const client = new TonClient({ endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC' });
+  const balance = await client.getBalance(wallet.address);
+  console.log('Balance:', fromNano(balance), 'TON');
+})();
