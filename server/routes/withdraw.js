@@ -32,6 +32,7 @@ router.post('/withdraw', async (req, res) => {
       value: toNano(amount),
       seqno,
       bounce: false,
+      body: null,
     });
 
     return res.json({ success: true, message: 'Transfer initiated' });
