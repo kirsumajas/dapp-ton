@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { mnemonicToWalletKey } = require('@ton/crypto');
-const { TonClient, WalletContractV4, toNano } = require('@ton/ton');
+const { TonClient, WalletContractV4, toNano, internal } = require('@ton/ton');
 const { getHttpEndpoint } = require('@orbs-network/ton-access');
-const { Cell } = require('@ton/core');
 
 router.post('/withdraw', async (req, res) => {
   const { toAddress, amount } = req.body;
@@ -27,16 +26,15 @@ router.post('/withdraw', async (req, res) => {
     const contract = client.open(wallet);
     const seqno = await contract.getSeqno();
 
-    const transfer = await contract.sendTransfer({
+    await contract.sendTransfer({
       secretKey: keyPair.secretKey,
       seqno,
       messages: [
-        {
+        internal({
           to: toAddress,
           value: toNano(amount),
           bounce: false,
-          body: new Cell(), // optional: empty body
-        },
+        }),
       ],
     });
 
@@ -48,4 +46,3 @@ router.post('/withdraw', async (req, res) => {
 });
 
 module.exports = router;
-
