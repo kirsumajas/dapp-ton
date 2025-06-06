@@ -3,6 +3,7 @@ const router = express.Router();
 const { mnemonicToWalletKey } = require('@ton/crypto');
 const { TonClient, WalletContractV4, toNano } = require('@ton/ton');
 const { getHttpEndpoint } = require('@orbs-network/ton-access');
+const { Cell } = require('@ton/core');
 
 router.post('/withdraw', async (req, res) => {
   const { toAddress, amount } = req.body;
@@ -32,7 +33,7 @@ router.post('/withdraw', async (req, res) => {
       value: toNano(amount),
       seqno,
       bounce: false,
-      body: null,
+      body: new Cell(), 
     });
 
     return res.json({ success: true, message: 'Transfer initiated' });
