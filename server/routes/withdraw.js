@@ -27,13 +27,17 @@ router.post('/withdraw', async (req, res) => {
     const contract = client.open(wallet);
     const seqno = await contract.getSeqno();
 
-    await contract.sendTransfer({
+    const transfer = await contract.sendTransfer({
       secretKey: keyPair.secretKey,
-      to: toAddress,
-      value: toNano(amount),
       seqno,
-      bounce: false,
-      body: new Cell(), 
+      messages: [
+        {
+          to: toAddress,
+          value: toNano(amount),
+          bounce: false,
+          body: new Cell(), // optional: empty body
+        },
+      ],
     });
 
     return res.json({ success: true, message: 'Transfer initiated' });
@@ -44,3 +48,4 @@ router.post('/withdraw', async (req, res) => {
 });
 
 module.exports = router;
+
