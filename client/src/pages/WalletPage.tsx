@@ -2,9 +2,6 @@ import ConnectWalletButton from '../components/ConnectWalletButton';
 import JettonStats from '../components/JettonStats';
 import PageLayout from '../components/PageLayout';
 import logo from '../assets/Logo.svg';
-import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
-
-
 
 export default function Wallet() {
   return (
@@ -18,15 +15,13 @@ export default function Wallet() {
             className="w-[122px] h-[49px] object-contain"
           />
         </div>
-        <ButtonCreateWallet className="w-[127px] h-[46px]" />
+
+        {/* Custom wallet connect button or address */}
+        <ConnectWalletButton />
       </section>
 
-        <div className="flex justify-center">
-          <ConnectWalletButton />
-        </div>
-        <JettonStats />
-        
-      
+      {/* Jetton statistics section */}
+      <JettonStats />
     </PageLayout>
   );
 }

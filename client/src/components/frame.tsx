@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import ButtonClaimAirdrop from './buttons/ButtonClaimAirdrop'; // adjust path if needed
+import ButtonClaimAirdrop from './buttons/ButtonClaimAirdrop';
+import { useAirdropStore } from '../store/airdropStore';
 
 const AirdropFrame: React.FC = () => {
+  const airdropEnd = useAirdropStore((s) => s.airdropEnd);
+
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
   });
 
-  const endDate = new Date('2025-07-01T00:00:00Z');
-
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
-      const distance = endDate.getTime() - now;
+      const distance = airdropEnd - now;
 
       if (distance < 0) {
         clearInterval(interval);
@@ -28,7 +29,7 @@ const AirdropFrame: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [endDate]);
+  }, [airdropEnd]);
 
   const gradientTextStyle: React.CSSProperties = {
     background:
@@ -58,17 +59,16 @@ const AirdropFrame: React.FC = () => {
         </div>
 
         <div
-        className="mt-6 relative w-[210px] h-[46px] mx-auto cursor-pointer rounded-xl overflow-hidden"
-        onClick={handleClaim}
+          className="mt-6 relative w-[210px] h-[46px] mx-auto cursor-pointer rounded-xl overflow-hidden"
+          onClick={handleClaim}
         >
-        <ButtonClaimAirdrop className="absolute top-0 left-0 w-full h-full" />
-        <div className="absolute inset-0 bg-white/5 backdrop-blur-xl flex items-center justify-center rounded-xl border border-[#31AD36]">
+          <ButtonClaimAirdrop className="absolute top-0 left-0 w-full h-full" />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-xl flex items-center justify-center rounded-xl border border-[#31AD36]">
             <span className="text-[#31AD36] text-sm font-semibold">
-            Claim <span className="font-bold">100 CHOP</span>
+              Claim <span className="font-bold">100 CHOP</span>
             </span>
+          </div>
         </div>
-        </div>
-
       </div>
     </div>
   );
