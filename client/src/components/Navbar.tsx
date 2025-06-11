@@ -9,23 +9,26 @@ interface Props {
 }
 
 export default function NavBar({ className = '' }: Props) {
-  const linkBase = 'flex flex-col items-center justify-center gap-2.5';
+  const linkBase = 'flex flex-col items-center justify-center gap-1 min-w-0 flex-1';
   const iconBase = 'w-6 h-6 transition-colors duration-200';
 
   const labelClass = (isActive: boolean) =>
-    `text-sm ${isActive ? 'font-bold text-accent-g' : 'font-normal text-white'}`;
+    `text-sm transition-colors duration-200 ${
+      isActive ? 'font-bold text-accent-g' : 'font-normal text-white'
+    }`;
 
   return (
     <footer
-      className={`w-full max-w-md mx-auto px-8 py-4 
-                  pb-[calc(3rem+env(safe-area-inset-bottom))] 
+      className={`w-full max-w-md mx-auto px-6 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom))] 
                   min-h-[64px] bg-[#5555554c] backdrop-blur-[21px] 
                   backdrop-brightness-100 flex justify-between items-end shadow-lg ${className}`}
     >
       <NavLink to="/" end className={linkBase}>
         {({ isActive }) => (
           <>
-            <HomeIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={iconBase}>
+              <HomeIcon className={`w-full h-full ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            </div>
             <div className={labelClass(isActive)}>Home</div>
           </>
         )}
@@ -34,7 +37,9 @@ export default function NavBar({ className = '' }: Props) {
       <NavLink to="/tasks" className={linkBase}>
         {({ isActive }) => (
           <>
-            <TasksIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={iconBase}>
+              <TasksIcon className={`w-full h-full ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            </div>
             <div className={labelClass(isActive)}>Tasks</div>
           </>
         )}
@@ -43,7 +48,11 @@ export default function NavBar({ className = '' }: Props) {
       <NavLink to="/collection" className={linkBase}>
         {({ isActive }) => (
           <>
-            <CollectionIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={iconBase}>
+              <CollectionIcon
+                className={`w-full h-full ${isActive ? 'text-accent-g' : 'text-white'}`}
+              />
+            </div>
             <div className={labelClass(isActive)}>Collections</div>
           </>
         )}
@@ -52,7 +61,9 @@ export default function NavBar({ className = '' }: Props) {
       <NavLink to="/wallet" className={linkBase}>
         {({ isActive }) => (
           <>
-            <WalletIcon className={`${iconBase} ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            <div className={iconBase}>
+              <WalletIcon className={`w-full h-full ${isActive ? 'text-accent-g' : 'text-white'}`} />
+            </div>
             <div className={labelClass(isActive)}>Wallet</div>
           </>
         )}

@@ -1,4 +1,6 @@
 import PageLayout from '../components/PageLayout';
+import logo from '../assets/Logo.svg';
+import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
 
 export default function Collection() {
   const images = [
@@ -8,6 +10,17 @@ export default function Collection() {
 
   return (
     <PageLayout>
+      {/* Header */}
+      <section className="pt-[calc(env(safe-area-inset-top)+92px)] pb-4 px-3 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <img
+            src={logo}
+            alt="ChopCoin Logo"
+            className="w-[122px] h-[49px] object-contain"
+          />
+        </div>
+        <ButtonCreateWallet className="w-[127px] h-[46px]" />
+      </section>
       <div className="px-4 pt-safe-top pb-safe-bottom max-w-5xl mx-auto text-center space-y-6">
         <h1 className="text-3xl font-bold">CHEKHOVSKY CHOPPA</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

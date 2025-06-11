@@ -3,13 +3,14 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import WebApp from '@twa-dev/sdk';
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
-// Tell Telegram the app is ready
+// Telegram WebApp readiness
 WebApp.ready();
 WebApp.expand();
 WebApp.requestFullscreen();
 
-// Set --app-height using stable viewport height
+// Set --app-height for viewport-safe UI
 const setAppHeight = () => {
   const stableHeight = WebApp.viewportStableHeight || window.innerHeight;
   document.documentElement.style.setProperty('--app-height', `${stableHeight}px`);
@@ -17,7 +18,6 @@ const setAppHeight = () => {
 };
 
 setAppHeight();
-
 // Listen to Telegram viewport change events
 WebApp.onEvent('viewportChanged', (event) => {
   if (event.isStateStable) {
@@ -25,10 +25,13 @@ WebApp.onEvent('viewportChanged', (event) => {
   }
 });
 
-// Render the app
+// 🚀 Wrap with TonConnectUIProvider
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
+    <TonConnectUIProvider
+       manifestUrl="https://kirsumajas.github.io/dapp-ton/tonconnect-manifest.json"
+    >
+      <App />
+    </TonConnectUIProvider>
+  </StrictMode>
 );
-
