@@ -5,6 +5,8 @@ const { handleAirdropClaim } = require('../controllers/airdropController');
 const validateInitData = require('../middleware/validateInitData');
 const rateLimiter = require('../middleware/rateLimiter');
 
-router.post('/claim', validateInitData, rateLimiter, handleAirdropClaim);
+router.post('/claim', rateLimiter, handleAirdropClaim);
 
 module.exports = router;
+
+// validateInitData.js
