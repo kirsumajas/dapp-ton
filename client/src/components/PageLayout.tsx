@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { useTonConnectUI } from '@tonconnect/ui-react';
+import { useWalletStore } from '../store/walletStore';
 import Navbar from './Navbar';
 
 interface PageLayoutProps {
@@ -7,6 +9,15 @@ interface PageLayoutProps {
 }
 
 export default function PageLayout({ children, className = '' }: PageLayoutProps) {
+  const [tonConnectUI] = useTonConnectUI();
+  const { setAddress } = useWalletStore();
+
+  // Sync TonConnect address with Zustand store
+  useEffect(() => {
+    const walletAddress = tonConnectUI.account?.address ?? null;
+    setAddress(walletAddress);
+  }, [tonConnectUI.account?.address, setAddress]);
+
   return (
     <div className="flex flex-col h-[var(--app-height)] bg-[#26242A] text-white overflow-hidden">
       {/* Scrollable content */}

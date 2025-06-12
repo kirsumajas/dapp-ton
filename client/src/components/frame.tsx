@@ -9,25 +9,29 @@ const AirdropFrame: React.FC = () => {
     days: 0,
     hours: 0,
     minutes: 0,
+    seconds: 0,
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTimeLeft = () => {
       const now = Date.now();
       const distance = airdropEnd - now;
 
       if (distance < 0) {
-        clearInterval(interval);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
 
-      setTimeLeft({ days, hours, minutes });
-    }, 1000);
+      setTimeLeft({ days, hours, minutes, seconds });
+    };
 
+    updateTimeLeft(); // run immediately on mount
+    const interval = setInterval(updateTimeLeft, 1000);
     return () => clearInterval(interval);
   }, [airdropEnd]);
 
@@ -55,7 +59,7 @@ const AirdropFrame: React.FC = () => {
           className="text-center text-[28px] font-extrabold leading-none tracking-wide"
           style={gradientTextStyle}
         >
-          {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
+          {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
         </div>
 
         <div

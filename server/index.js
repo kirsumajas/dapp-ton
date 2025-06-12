@@ -15,12 +15,14 @@ const withdrawRoute = require('./routes/withdraw');
 const balanceRoutes = require('./routes/balance');
 const milestoneRoutes = require('./routes/milestones');
 const telegramRoutes = require('./routes/telegram');
+const airdropRoutes = require('./routes/airdrop');
 
 //  Route Mounts
 app.use('/api/withdraw', withdrawRoute);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/milestones', milestoneRoutes);
 app.use('/api/telegram', telegramRoutes);
+app.use('/api/airdrop', airdropRoutes);
 
 //  Server Start
 app.listen(PORT, () => {

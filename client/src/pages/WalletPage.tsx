@@ -1,8 +1,9 @@
 import ConnectWalletButton from '../components/ConnectWalletButton';
 import JettonStats from '../components/JettonStats';
 import PageLayout from '../components/PageLayout';
+import WithdrawForm from '../components/WithdrawForm';
 import logo from '../assets/Logo.svg';
-
+import WithdrawButton from '../components/WithdrawButton';
 export default function Wallet() {
   return (
     <PageLayout>
@@ -22,6 +23,17 @@ export default function Wallet() {
 
       {/* Jetton statistics section */}
       <JettonStats />
+
+      {/* Withdraw form */}
+      <div className="mt-6 px-4">
+        <WithdrawForm />
+      </div>
+      {/* Withdraw button section */}
+      <div className="p-4">
+      <h2 className="text-white text-lg mb-2">Withdraw your earnings</h2>
+      <WithdrawButton amount={0.5} />
+    </div>
+
     </PageLayout>
   );
 }
