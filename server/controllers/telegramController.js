@@ -1,6 +1,6 @@
 const axios = require('axios');
 const db = require('../db/db');
-const { getUser, addTaskReward } = require('../db/helpers');
+const { addTaskReward } = require('../db/helpers');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHANNEL_USERNAME = process.env.TELEGRAM_CHANNEL_USERNAME;
@@ -15,6 +15,13 @@ async function verifySubscription(req, res) {
   }
 
   try {
+    // 🔍 Log the exact parameters sent to Telegram API
+    console.log('[DEBUG] Calling getChatMember with:', {
+      chat_id: CHANNEL_USERNAME,
+      user_id: telegramId
+    });
+
+    // 📨 Call Telegram API to check if user is subscribed
     const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember`, {
       params: {
         chat_id: CHANNEL_USERNAME,
