@@ -38,4 +38,13 @@ db.exec(`
   );
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS task_completions (
+    telegram_id TEXT NOT NULL,
+    task_name TEXT NOT NULL,
+    completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (telegram_id, task_name)
+  );
+`);
+
 module.exports = db;

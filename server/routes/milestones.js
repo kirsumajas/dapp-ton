@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const db = require('../db/db');
 
 // GET /api/milestones
 router.get('/', (req, res) => {

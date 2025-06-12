@@ -1,4 +1,4 @@
-const db2 = require('../db');
+const db2 = require('../db/db');
 exports.handleAirdropClaim = async (req, res) => {
   const { telegramId, toAddress } = req.body;
   if (!telegramId || !toAddress) {

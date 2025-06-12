@@ -2,7 +2,7 @@
 const { mnemonicToWalletKey } = require('@ton/crypto');
 const { WalletContractV4, toNano, internal } = require('@ton/ton');
 const { getTonClient } = require('../utils/tonClient');
-const db = require('../db');
+const db = require('../db/db');
 
 exports.handleWithdraw = async (req, res) => {
   const { toAddress, amount, telegramId } = req.body;

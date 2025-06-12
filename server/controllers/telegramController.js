@@ -1,5 +1,6 @@
 const axios = require('axios');
-const { getUser, addTaskReward } = require('../db');
+const db = require('../db/db');
+const { getUser, addTaskReward } = require('../db/helpers');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHANNEL_USERNAME = process.env.TELEGRAM_CHANNEL_USERNAME;
@@ -14,7 +15,6 @@ async function verifySubscription(req, res) {
   }
 
   try {
-    // Check if user is a member of the channel
     const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember`, {
       params: {
         chat_id: CHANNEL_USERNAME,
@@ -43,14 +43,13 @@ async function verifySubscription(req, res) {
     });
 
   } catch (err) {
-    console.error('verify-subscription error:', err.message);
+    console.error('verify-subscription error:', err.response?.data || err.message);
     return res.status(500).json({ success: false, message: 'Failed to verify subscription.' });
   }
 }
 
-// internal helper
 function checkTaskCompletion(telegramId, taskName) {
-  const stmt = require('../db').db.prepare('SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?');
+  const stmt = db.prepare('SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?');
   return stmt.get(telegramId, taskName);
 }
 
