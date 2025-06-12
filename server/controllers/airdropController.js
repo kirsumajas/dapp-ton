@@ -6,7 +6,8 @@ const db2 = require('../db/db');
 // optional: helper to create TON client
 async function getTonClient() {
   return new TonClient({
-    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC'
+    endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
+    apiKey: process.env.TONCENTER_API_KEY,
   });
 }
 
