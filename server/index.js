@@ -4,6 +4,10 @@ const cors = require('cors');
 const app = express();
 const db = require('./db/db');
 
+
+// Express-rate-limit proxy issue
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors());
 app.use(express.json());
