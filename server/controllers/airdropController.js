@@ -11,7 +11,7 @@ exports.handleAirdropClaim = async (req, res) => {
   }
 
   try {
-    const mnemonic = process.env.AIRDROP_MNEMONIC.split(' ');
+    const mnemonic = process.env.TREASURY_MNEMONIC.split(' ');
     const keyPair = await mnemonicToWalletKey(mnemonic);
     const client = await getTonClient();
     const wallet = WalletContractV4.create({ workchain: 0, publicKey: keyPair.publicKey });
