@@ -16,14 +16,14 @@ const balanceRoutes = require('./routes/balance');
 const milestoneRoutes = require('./routes/milestones');
 const telegramRoutes = require('./routes/telegram');
 const airdropRoutes = require('./routes/airdrop');
-
+const tasksRoutes = require('./routes/tasks');
 //  Route Mounts
 app.use('/api/withdraw', withdrawRoute);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/milestones', milestoneRoutes);
 app.use('/api/telegram', telegramRoutes);
 app.use('/api/airdrop', airdropRoutes);
-
+app.use('/api/tasks', tasksRoutes);
 //  Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
