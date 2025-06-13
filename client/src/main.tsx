@@ -10,6 +10,24 @@ WebApp.ready();
 WebApp.expand();
 WebApp.requestFullscreen();
 
+console.log('[Telegram] WebApp loaded:', WebApp);
+console.log('[Telegram] initData:', WebApp.initData);
+console.log('[Telegram] initDataUnsafe:', WebApp.initDataUnsafe);
+
+window.onerror = function (message, source, lineno, colno, error) {
+  console.error('[Global Error]', { message, source, lineno, colno, error });
+};
+
+const initDataValid = !!WebApp.initDataUnsafe?.user;
+if (!initDataValid) {
+  const root = document.getElementById('root')!;
+  root.innerHTML = `<div style="color: white; padding: 2rem;">
+    ❌ Error: Telegram init data is missing.<br />
+    Please open this Mini App from Telegram.
+  </div>`;
+  throw new Error('Telegram init data missing');
+}
+
 // Set --app-height for viewport-safe UI
 const setAppHeight = () => {
   const stableHeight = WebApp.viewportStableHeight || window.innerHeight;
