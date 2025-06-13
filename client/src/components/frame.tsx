@@ -50,7 +50,7 @@ const AirdropFrame: React.FC = () => {
 
   return (
     <div className="bg-[#2e2c33] rounded-xl p-5 text-white w-full max-w-sm mx-auto">
-      <div className="w-full bg-[url('/mask-group.png')] bg-cover bg-center rounded-xl p-4 pb-6 relative">
+      <div className="w-full bg-[#3a393f] rounded-xl p-4 pb-6 relative">
         <div className="text-center font-bold text-[20px] mb-4">
           EARLY BIRD AIRDROP
         </div>

@@ -1,4 +1,4 @@
-/*export function getTelegramUserId(): string | null {
+export function getTelegramUserId(): string | null {
   const params = new URLSearchParams(window.Telegram?.WebApp?.initData || window.location.search);
   const userData = params.get('user') || params.get('initDataUnsafe');
 
@@ -13,4 +13,4 @@
   }
 
   return null;
-} */
+} 
