@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getTelegramUserId } from '../utils/getTelegramUser';
 
@@ -35,4 +35,4 @@ const InAppBalance: React.FC = () => {
   );
 };
 
-export default InAppBalance;
+export default InAppBalance; */
