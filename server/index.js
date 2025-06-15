@@ -3,7 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const db = require('./db/db');
-
+const logRoute = require('./routes/log');
+app.use('/api/log', logRoute);
+const xRoutes = require('./routes/x');
+app.use('/api/x', xRoutes);
 
 // Express-rate-limit proxy issue
 app.set('trust proxy', 1);

@@ -9,6 +9,8 @@ import { TonConnectUIProvider } from '@tonconnect/ui-react';
 WebApp.ready();
 WebApp.expand();
 WebApp.requestFullscreen();
+import { Buffer } from 'buffer';
+(window as any).Buffer = Buffer;
 
 function debugLog(msg: string) {
   const div = document.createElement('div');

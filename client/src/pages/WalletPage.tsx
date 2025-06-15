@@ -4,7 +4,7 @@ import PageLayout from '../components/PageLayout';
 import WithdrawForm from '../components/WithdrawForm';
 import logo from '../assets/Logo.svg';
 import WithdrawButton from '../components/WithdrawButton';
-//import InAppBalance from '../components/InAppBalance';
+import InAppBalance from '../components/InAppBalance';
 
 export default function Wallet() {
   return (
@@ -27,7 +27,7 @@ export default function Wallet() {
       <JettonStats />
       
       {/* In-app balance section */}
-      
+      <InAppBalance/>
 
       {/* Withdraw form */}
       <div className="mt-6 px-4">

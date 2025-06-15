@@ -46,5 +46,31 @@ db.exec(`
     PRIMARY KEY (telegram_id, task_name)
   );
 `);
+db.exec(`
+  CREATE TABLE IF NOT EXISTS user_wallets (
+    telegram_id TEXT PRIMARY KEY,
+    wallet_address TEXT UNIQUE
+  );
+`);
+db.exec(`
+  CREATE TABLE IF NOT EXISTS user_rewards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    telegram_id TEXT NOT NULL,
+    amount REAL NOT NULL,
+    reward_type TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+  );
+`);
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tasks (
+    name TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    reward REAL NOT NULL
+  );
+`);
+
 
 module.exports = db;
