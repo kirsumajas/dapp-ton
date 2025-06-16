@@ -1,0 +1,150 @@
+* [33m238a4b1a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdebug-broken-version[m[33m)[m Saving current broken state for debugging
+* [33m1ae7e061[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m adg
+* [33m395b772a[m add error logg
+* [33md4b8021f[m add error logging
+* [33m0bf1426f[m fnothh
+* [33m914be3c9[m fix smth
+* [33mbc5496d8[m fix add Ton Api key
+* [33mfaeae47b[m fix 4x
+* [33mc21a6d35[m fix 3x
+* [33ma6d4aaac[m fix 3
+* [33md193e687[m fix 2
+* [33m35cdae83[m fix
+* [33mb28df36a[m Add loginge
+* [33madcfc66b[m Add db helpers file
+* [33m22587651[m Refactor: move Telegram task logic to controller
+* [33m1855504a[m Fix: add express-rate-limit middleware
+* [33m50d50664[m Add tonconnect manifest and connect wallet handler
+* [33m82914fe8[m Update Zustand wallet store and ConnectWalletButton
+* [33m1a8ebdb0[m Update tonconnect manifest, add wallet icon, terms and privacy pages, and connect handler
+* [33m916cf2cf[m Fix withdraw route: use internal() to format message
+* [33mac2f6778[m Fix withdraw route: use messages array for sendTransfer
+* [33m63b917a7[m Fix withdraw error by using empty Cell body
+* [33m5bec4c12[m Add body-null for withdraw endpoint
+* [33mdeefde4e[m Add @orbs-network/ton-access for withdraw endpoint
+* [33m90659b0a[m Add withdraw endpoint
+* [33m3dbe7f38[m Initial working backend with user balance
+* [33m00d271f8[m Fix: Initialize db before using it in db.js
+* [33m9a292a12[m Fix milestone status validation and add support for multiple seasons
+* [33mb7949ff5[m Remove 'active' status from milestone schema and validation
+* [33m7a608f55[m Add status support to milestones API
+* [33mb7173250[m milestones
+* [33ma9ed8491[m Fix: correct subscription check endpoint
+* [33mb2b0d864[m Add start script for Render deploy
+* [33m01295675[m Add start script for Render deployment
+* [33m9f7995f3[m Add client and server folder structure for frontend and backend
+* [33m6bf479f6[m Initial commit for GitHub Pages
+* [33m96c9aa43[m Fix base path for GitHub Pages
+* [33mf4fb9672[m Initial commit for GitHub Pages
+* [33m165ec7ab[m Delete index.html
+* [33mc65c067b[m Add initial index.html
+* [33m4ce24831[m[33m ([m[1;31morigin/gh-pages[m[33m)[m Updates
+* [33m0186243c[m Updates
+* [33m6f650d8f[m Updates
+* [33md7bd4f87[m Updates
+* [33m3d144621[m Updates
+* [33mc415a2c5[m Updates
+* [33m2ff87448[m Updates
+* [33m44ba404c[m Updates
+* [33m9bc70c50[m Updates
+* [33m6b0eb04d[m Updates
+* [33mbe24f6de[m Updates
+* [33md37dee28[m Updates
+* [33m144d7d53[m Updates
+* [33m30107d28[m Updates
+* [33mc11691fb[m Updates
+* [33m021a33a1[m Updates
+* [33ma7c91dd9[m Updates
+* [33mc1f3418b[m Updates
+* [33m3475b288[m Updates
+* [33m324f36ee[m Updates
+* [33maf3e54e5[m Updates
+* [33m3314e9a3[m Updates
+* [33mb3f02c75[m Updates
+* [33mc15860e9[m Updates
+* [33m93892e13[m Updates
+* [33m3c4abe1a[m Updates
+* [33m78f422d9[m Updates
+* [33m7ae11937[m Updates
+* [33m9930f80a[m Updates
+* [33me1e05ce2[m Updates
+* [33meaaf68af[m Updates
+* [33ma8971d9c[m Updates
+* [33m219bf6f7[m Updates
+* [33mded243fc[m Updates
+* [33mf8e56495[m Updates
+* [33me5fed2e1[m Updates
+* [33macfac67b[m Updates
+* [33m8eec2d92[m Updates
+* [33me81f1045[m Updates
+* [33m49f13bb5[m Updates
+* [33mb1b8f7cc[m Updates
+* [33mdc3519f0[m Updates
+* [33me8e7e5bd[m Updates
+* [33m8ca26e52[m Updates
+* [33mc2131ed5[m Updates
+* [33m39a0639b[m Updates
+* [33mfb7d945f[m Updates
+* [33mb3748c82[m Updates
+* [33m99e20427[m Updates
+* [33m891677c3[m Updates
+* [33m3fdb7900[m Updates
+* [33m3f5b27db[m Updates
+* [33mebff4ff1[m Updates
+* [33m7d09bc56[m Updates
+* [33me190f506[m Updates
+* [33m368b4452[m Updates
+* [33m1af3e99f[m Updates
+* [33m60b7e68f[m Updates
+* [33mee681b83[m Updates
+* [33m44a352a1[m Updates
+* [33m80655044[m Updates
+* [33m2906c240[m Updates
+* [33m0ded66da[m Updates
+* [33ma40c58cf[m Updates
+* [33md490466e[m Updates
+* [33m73a1430a[m Updates
+* [33m64e52bec[m Updates
+* [33ma3c84431[m Updates
+* [33m2295a1f4[m Updates
+* [33m45c8e330[m Updates
+* [33m142a4508[m Updates
+* [33me0b844f2[m Updates
+* [33me1442976[m Updates
+* [33ma93fecfe[m Updates
+* [33m08e9fa66[m Updates
+* [33m7fc31de6[m Updates
+* [33mcb78abd0[m Updates
+* [33mca722938[m Updates
+* [33m5f7feec4[m Updates
+* [33m28c139ba[m Updates
+* [33m73565fb5[m Updates
+* [33m574bc500[m Updates
+* [33m6fcff30f[m Updates
+* [33mdc2be743[m Updates
+* [33m9c08ea26[m Updates
+* [33m09e627cb[m Updates
+* [33m9af569d2[m Updates
+* [33m5ebbbc21[m Updates
+* [33mf0792ae1[m Updates
+* [33mfe10c7fc[m Updates
+* [33m81af9b7c[m Updates
+* [33m963da215[m Updates
+* [33m218cfa89[m Updates
+* [33mab6816cf[m Updates
+* [33mb9175535[m Updates
+* [33m4e6ce60b[m Updates
+* [33m06cf59e8[m Updates
+* [33me508c239[m Updates
+* [33me15b793a[m Updates
+* [33m6d3978b9[m Updates
+* [33m3ff11412[m Updates
+* [33m4f91bc6c[m Updates
+* [33mc4be1a46[m Updates
+* [33m88d3ab50[m Updates
+* [33m40b77f61[m Updates
+* [33me5a2efd1[m Updates
+* [33m4de6faf4[m Updates
+* [33m1e16770e[m Updates
+* [33mba01a36f[m Updates
+* [33m80fc40cf[m Updates

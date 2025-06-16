@@ -1,0 +1,10 @@
+{
+  "url": "https://kirsumajas.github.io/dapp-ton",
+  "name": "Chekhovsky Choppa",
+  "iconUrl": "https://kirsumajas.github.io/dapp-ton/icon180.png",
+  "manifestVersion": "1",
+  "bridgeUrl": "https://bridge.tonapi.io/bridge",
+  "termsOfUseUrl": "https://kirsumajas.github.io/dapp-ton/terms.html",
+  "privacyPolicyUrl": "https://kirsumajas.github.io/dapp-ton/privacy.html",
+  "platforms": ["ios", "android", "web"]
+}

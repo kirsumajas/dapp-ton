@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font and general rendering quality */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Full-screen sizing controlled by stable viewport */
+html, body, #root {
+  height: var(--app-height); /* from JS (Telegram stable height) */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #5555554c;
+  color: white;
+  overflow: hidden;
+}
+
+/* Prevent bouncing/zooming/scroll shifting */
+html, body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Disable scrollbars globally */
+* {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Remove default alignment overrides */
+body {
+  display: block;
+  place-items: unset;
+}
+
+/* Optional: smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Common UI resets */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+/* Utility: horizontal scrolling with no visible scrollbar */
+.scroll-x-no-bar {
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-x-no-bar::-webkit-scrollbar {
+  display: none;
+}
