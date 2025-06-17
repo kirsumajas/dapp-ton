@@ -8,8 +8,11 @@ interface TaskCardProps {
   taskName: string;
   telegramId: string;
   onStart?: () => void;
-  onSuccess?: () => void; // refetch tasks or balance
+  onSuccess?: () => void;
 }
+
+// Read channel URL from .env
+const TELEGRAM_CHANNEL_URL = import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
 
 const TaskCard: React.FC<TaskCardProps> = ({ icon, title, reward, taskName, telegramId, onSuccess }) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,7 +29,19 @@ const TaskCard: React.FC<TaskCardProps> = ({ icon, title, reward, taskName, tele
         alert('✅ Task completed & reward added!');
         onSuccess?.();
       } else {
-        alert('⚠️ Task verification failed or already completed.');
+        const msg = res.data.message || '';
+        if (msg.toLowerCase().includes('not subscribed')) {
+          const go = window.confirm(
+            '📢 You are not subscribed to the Telegram channel. Do you want to visit it now?'
+          );
+          if (go) {
+            window.open(TELEGRAM_CHANNEL_URL, '_blank');
+          }
+        } else if (msg.toLowerCase().includes('already')) {
+          alert('⚠️ Task already completed.');
+        } else {
+          alert('⚠️ Task verification failed.');
+        }
       }
     } catch (err) {
       console.error('Error verifying task:', err);
