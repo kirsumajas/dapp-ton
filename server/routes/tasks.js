@@ -28,4 +28,7 @@ router.post('/add', (req, res) => {
   }
 });
 
+// ✅ Add this new GET endpoint
+router.get('/:telegramId', getTasksForUser);
+
 module.exports = router;
