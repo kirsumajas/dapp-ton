@@ -7,48 +7,113 @@ interface TaskCardProps {
   reward: string;
   taskName: string;
   telegramId: string;
-  onStart?: () => void;
   onSuccess?: () => void;
 }
 
-// Read channel URL from .env
-const TELEGRAM_CHANNEL_URL = import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
+const TELEGRAM_CHANNEL_URL =
+  import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
 
-const TaskCard: React.FC<TaskCardProps> = ({ icon, title, reward, taskName, telegramId, onSuccess }) => {
+const TaskCard: React.FC<TaskCardProps> = ({
+  icon,
+  title,
+  reward,
+  taskName,
+  telegramId,
+  onSuccess,
+}) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [stage, setStage] = useState<'start' | 'verify' | 'completed'>('start');
 
-  const handleStart = async () => {
-    setIsProcessing(true);
+  const verifyAndReward = async () => {
     try {
-      const res = await axios.post('/api/tasks/verify', {
+      // Determine endpoint based on task name
+      const endpoint =
+        taskName === 'subscribe-channel'
+          ? '/api/telegram/verify-subscription'
+          : '/api/tasks/verify';
+
+      const res = await axios.post(endpoint, {
         telegramId,
-        taskName
+        taskName,
       });
 
       if (res.data.success) {
         alert('✅ Task completed & reward added!');
+        setStage('completed');
         onSuccess?.();
+        return true;
       } else {
         const msg = res.data.message || '';
         if (msg.toLowerCase().includes('not subscribed')) {
-          const go = window.confirm(
-            '📢 You are not subscribed to the Telegram channel. Do you want to visit it now?'
-          );
-          if (go) {
-            window.open(TELEGRAM_CHANNEL_URL, '_blank');
-          }
-        } else if (msg.toLowerCase().includes('already')) {
-          alert('⚠️ Task already completed.');
-        } else {
-          alert('⚠️ Task verification failed.');
+          return false;
         }
+        if (msg.toLowerCase().includes('already')) {
+          alert('⚠️ Task already completed.');
+          setStage('completed');
+          return true;
+        }
+        alert('⚠️ Verification failed.');
       }
     } catch (err) {
-      console.error('Error verifying task:', err);
+      console.error('Verification error:', err);
       alert('❌ Something went wrong.');
-    } finally {
-      setIsProcessing(false);
     }
+    return false;
+  };
+
+  const handleStart = async () => {
+    setIsProcessing(true);
+    const verified = await verifyAndReward();
+    if (!verified) {
+      // not subscribed → open channel and wait for manual verify
+      window.open(TELEGRAM_CHANNEL_URL, '_blank');
+      setStage('verify');
+    }
+    setIsProcessing(false);
+  };
+
+  const handleVerify = async () => {
+    setIsProcessing(true);
+    const verified = await verifyAndReward();
+    if (!verified) {
+      alert('🚫 You are still not subscribed. Try again after subscribing.');
+    }
+    setIsProcessing(false);
+  };
+
+  const renderButton = () => {
+    if (stage === 'completed') {
+      return (
+        <button
+          disabled
+          className="w-28 h-11 rounded-xl border border-green-500 bg-green-800 text-white"
+        >
+          ✅ Done
+        </button>
+      );
+    }
+
+    if (stage === 'verify') {
+      return (
+        <button
+          onClick={handleVerify}
+          disabled={isProcessing}
+          className="w-28 h-11 rounded-xl border border-yellow-400 bg-yellow-700 text-white"
+        >
+          {isProcessing ? 'Checking...' : 'Verify'}
+        </button>
+      );
+    }
+
+    return (
+      <button
+        onClick={handleStart}
+        disabled={isProcessing}
+        className="w-28 h-11 rounded-xl border border-white bg-[#ffffff0a] text-white backdrop-blur-md"
+      >
+        {isProcessing ? 'Checking...' : 'Start'}
+      </button>
+    );
   };
 
   return (
@@ -63,15 +128,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ icon, title, reward, taskName, tele
           {reward}
         </span>
       </div>
-      <div className="mt-6">
-        <button
-          onClick={handleStart}
-          className="w-28 h-11 rounded-xl border border-white bg-[#ffffff0a] text-white backdrop-blur-md"
-          disabled={isProcessing}
-        >
-          {isProcessing ? 'Checking...' : 'Start'}
-        </button>
-      </div>
+      <div className="mt-6">{renderButton()}</div>
     </div>
   );
 };
