@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
-const { verifyAndRewardTask, getTasksForUser } = require('../controllers/taskController');
+const {
+  verifyAndRewardTask,
+  getTasksForUser
+} = require('../controllers/taskController');
 
 // Existing route
 router.post('/verify', verifyAndRewardTask);

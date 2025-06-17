@@ -15,16 +15,17 @@ type Task = {
   completed?: boolean;
 };
 
+const BASE_URL =
+  import.meta.env.VITE_API_URL || 'http://localhost:10000';
 
 const TasksPage = () => {
   const telegramId = getTelegramUserId();
   const [tasks, setTasks] = useState<Task[]>([]);
 
-
   const fetchTasks = async () => {
     if (!telegramId) return;
     try {
-      const res = await fetch(`/api/tasks/${telegramId}`);
+      const res = await fetch(`${BASE_URL}/api/tasks/${telegramId}`);
       const data = await res.json();
       if (data.success) setTasks(data.tasks);
     } catch (err) {
@@ -59,7 +60,13 @@ const TasksPage = () => {
         {tasks.map((task) => (
           <TaskCard
             key={task.name}
-            icon={task.name === 'subscribe-channel' ? <TelegramIconTasks /> : <XIconTasks />}
+            icon={
+              task.name === 'subscribe-channel' ? (
+                <TelegramIconTasks />
+              ) : (
+                <XIconTasks />
+              )
+            }
             title={task.title}
             reward={`${task.reward * 100} CHOP`}
             taskName={task.name}

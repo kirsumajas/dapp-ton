@@ -5,13 +5,13 @@ import App from './App.tsx';
 import WebApp from '@twa-dev/sdk';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { Buffer } from 'buffer';
-(window as any).Buffer = Buffer;
+
 
 // Telegram WebApp readiness
 WebApp.ready();
 WebApp.expand();
 WebApp.requestFullscreen();
-import { Buffer } from 'buffer';
+
 (window as any).Buffer = Buffer;
 
 import { logToBackend } from './utils/logToBackend';

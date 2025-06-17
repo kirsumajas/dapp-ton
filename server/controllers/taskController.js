@@ -60,3 +60,29 @@ exports.verifyAndRewardTask = async (req, res) => {
 
   return res.json({ success: true, message: 'Task verified and reward sent' });
 };
+exports.getTasksForUser = (req, res) => {
+  const telegramId = req.params.telegramId;
+
+  if (!telegramId) {
+    return res.status(400).json({ success: false, message: 'Missing telegramId' });
+  }
+
+  try {
+    const allTasks = db.prepare('SELECT * FROM tasks').all();
+    const completed = db.prepare(
+      'SELECT task_name FROM task_completions WHERE telegram_id = ?'
+    ).all(telegramId);
+
+    const completedNames = new Set(completed.map(t => t.task_name));
+
+    const tasks = allTasks.map(task => ({
+      ...task,
+      completed: completedNames.has(task.name)
+    }));
+
+    return res.json({ success: true, tasks });
+  } catch (err) {
+    console.error('Error fetching tasks:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
