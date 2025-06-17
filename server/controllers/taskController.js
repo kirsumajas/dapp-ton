@@ -1,5 +1,4 @@
 const db = require('../db/db');
-const { rewardUserWithTon } = require('../scripts/reward');
 
 // Optional: Verification logic based on task name
 const verificationHandlers = {
@@ -55,44 +54,10 @@ exports.verifyAndRewardTask = async (req, res) => {
     VALUES (?, ?, ?)
   `).run(telegramId, task.reward, taskName);
 
-  // Optionally update balance (if needed in-app)
+  // ✅ Update in-app balance
   db.prepare(`
     UPDATE users SET balance = balance + ? WHERE telegram_id = ?
   `).run(task.reward, telegramId);
 
-  // Send TON reward on testnet
-  try {
-    await rewardUserWithTon(telegramId, task.reward);
-  } catch (err) {
-    return res.status(500).json({ success: false, message: 'Reward failed', error: err.message });
-  }
-
-  return res.json({ success: true, message: 'Task verified and reward sent' });
-};
-
-exports.getTasksForUser = (req, res) => {
-  const telegramId = req.params.telegramId;
-
-  if (!telegramId) {
-    return res.status(400).json({ success: false, message: 'Missing telegramId' });
-  }
-
-  try {
-    const allTasks = db.prepare('SELECT * FROM tasks').all();
-    const completed = db.prepare(
-      'SELECT task_name FROM task_completions WHERE telegram_id = ?'
-    ).all(telegramId);
-
-    const completedNames = new Set(completed.map(t => t.task_name));
-
-    const tasks = allTasks.map(task => ({
-      ...task,
-      completed: completedNames.has(task.name)
-    }));
-
-    return res.json({ success: true, tasks });
-  } catch (err) {
-    console.error('Error fetching tasks:', err);
-    return res.status(500).json({ success: false, message: 'Server error' });
-  }
+  return res.json({ success: true, message: 'Task verified and in-app reward added' });
 };
