@@ -35,11 +35,13 @@ exports.verifyAndRewardTask = async (req, res) => {
   if (verify) {
     const verified = await verify(telegramId);
     if (!verified) {
-        console.log('[VERIFY FAILED]', taskName, telegramId);
-
+      console.log('[VERIFY FAILED]', taskName, telegramId);
       return res.status(403).json({ success: false, message: 'Verification failed' });
     }
   }
+
+  // ✅ Ensure user exists to avoid foreign key constraint errors
+  db.prepare('INSERT OR IGNORE INTO users (telegram_id, balance) VALUES (?, 0)').run(telegramId);
 
   // Insert into task_completions
   db.prepare(`
@@ -53,6 +55,11 @@ exports.verifyAndRewardTask = async (req, res) => {
     VALUES (?, ?, ?)
   `).run(telegramId, task.reward, taskName);
 
+  // Optionally update balance (if needed in-app)
+  db.prepare(`
+    UPDATE users SET balance = balance + ? WHERE telegram_id = ?
+  `).run(task.reward, telegramId);
+
   // Send TON reward on testnet
   try {
     await rewardUserWithTon(telegramId, task.reward);
@@ -62,6 +69,7 @@ exports.verifyAndRewardTask = async (req, res) => {
 
   return res.json({ success: true, message: 'Task verified and reward sent' });
 };
+
 exports.getTasksForUser = (req, res) => {
   const telegramId = req.params.telegramId;
 
