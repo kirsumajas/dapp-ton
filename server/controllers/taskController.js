@@ -35,6 +35,8 @@ exports.verifyAndRewardTask = async (req, res) => {
   if (verify) {
     const verified = await verify(telegramId);
     if (!verified) {
+        console.log('[VERIFY FAILED]', taskName, telegramId);
+
       return res.status(403).json({ success: false, message: 'Verification failed' });
     }
   }
