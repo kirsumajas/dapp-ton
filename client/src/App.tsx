@@ -6,6 +6,7 @@ import TasksPage from './pages/TasksPage';
 import Collection from './pages/Collection';
 import WalletPage from './pages/WalletPage';
 
+
 export default function App() {
    
   return (

@@ -1,6 +1,7 @@
 import PageLayout from '../components/PageLayout';
 import logo from '../assets/Logo.svg';
 import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
+import TelegramUserId from '../components/TelegramUserId';
 
 export default function Collection() {
   const images = [
@@ -34,6 +35,7 @@ export default function Collection() {
           ))}
         </div>
       </div>
+      <TelegramUserId />
     </PageLayout>
   );
 }

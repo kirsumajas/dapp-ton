@@ -1,16 +1,24 @@
-export function getTelegramUserId(): string | null {
-  const params = new URLSearchParams(window.Telegram?.WebApp?.initData || window.location.search);
-  const userData = params.get('user') || params.get('initDataUnsafe');
+export function getTelegramUserName(): string | null {
+  const tg = window.Telegram?.WebApp;
+  const user = tg?.initDataUnsafe?.user;
 
-  if (userData) {
-    try {
-      const user = typeof userData === 'string' ? JSON.parse(userData) : userData;
-      return user?.id?.toString() || null;
-    } catch (e) {
-      console.error('Failed to parse Telegram user data:', e);
-      return null;
-    }
+  if (user && user.username) {
+    return user.username;
   }
 
+  console.warn('Telegram username not found in initDataUnsafe');
   return null;
-} 
+}
+
+export function getTelegramUserId(): string | null {
+  const tg = window.Telegram?.WebApp;
+  const user = tg?.initDataUnsafe?.user;
+
+  if (user && user.id) {
+    return user.id.toString();
+  }
+
+  console.warn('Telegram user ID not found in initDataUnsafe');
+  return null;
+}
+

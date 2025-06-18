@@ -1,36 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path if needed
 
 interface TaskCardProps {
   icon: React.ReactNode;
   title: string;
   reward: string;
   taskName: string;
-  telegramId: string;
+  telegramId?: string; // optional to allow fallback
   onSuccess?: () => void;
 }
 
 const TELEGRAM_CHANNEL_URL =
   import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
 
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://your-fallback-url.com';
 const TaskCard: React.FC<TaskCardProps> = ({
   icon,
   title,
   reward,
   taskName,
-  telegramId,
+  telegramId: propTelegramId,
   onSuccess,
 }) => {
+  const [telegramId, setTelegramId] = useState<string | null>(propTelegramId || null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [stage, setStage] = useState<'start' | 'verify' | 'completed'>('start');
 
+  useEffect(() => {
+    if (!propTelegramId) {
+      const id = getTelegramUserId();
+      setTelegramId(id);
+      console.log('[DEBUG] Telegram ID:', id);
+    }
+  }, [propTelegramId]);
+
   const verifyAndReward = async () => {
+    if (!telegramId) {
+      alert('❌ Telegram ID not found. Please open this app inside Telegram.');
+      return false;
+    }
+
     try {
-      // Determine endpoint based on task name
       const endpoint =
-        taskName === 'subscribe-channel'
-          ? '/api/telegram/verify-subscription'
-          : '/api/tasks/verify';
+  taskName === 'subscribe-channel'
+    ? `${BACKEND_URL}/api/telegram/verify-subscription`
+    : `${BACKEND_URL}/api/tasks/verify`;
+
+      console.log('[DEBUG] Verifying task:', { telegramId, taskName, endpoint });
 
       const res = await axios.post(endpoint, {
         telegramId,
@@ -58,6 +75,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       console.error('Verification error:', err);
       alert('❌ Something went wrong.');
     }
+
     return false;
   };
 
@@ -65,7 +83,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
     setIsProcessing(true);
     const verified = await verifyAndReward();
     if (!verified) {
-      // not subscribed → open channel and wait for manual verify
       window.open(TELEGRAM_CHANNEL_URL, '_blank');
       setStage('verify');
     }
@@ -82,6 +99,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   const renderButton = () => {
+    if (!telegramId) {
+      return (
+        <div className="text-red-400 text-sm mt-2">
+          ⚠️ Unable to detect your Telegram ID. Please open this app inside Telegram.
+        </div>
+      );
+    }
+
     if (stage === 'completed') {
       return (
         <button

@@ -6,7 +6,7 @@ import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
 import TaskCard from '../components/taskcard';
 import TelegramIconTasks from '../components/socialMediaIcons/TelegramIconTasks';
 import XIconTasks from '../components/socialMediaIcons/XIconTasks';
-import { getTelegramUserId } from '../utils/getTelegramUser';
+import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path if needed
 
 type Task = {
   name: string;
@@ -75,6 +75,7 @@ const TasksPage = () => {
           />
         ))}
       </div>
+      
     </PageLayout>
   );
 };
