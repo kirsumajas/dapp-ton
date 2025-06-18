@@ -1,4 +1,6 @@
 require('dotenv').config();
+console.log('[ENV] TELEGRAM_BOT_TOKEN:', process.env.TELEGRAM_BOT_TOKEN?.slice(0, 10) + '...');
+console.log('[ENV] TELEGRAM_CHANNEL_USERNAME:', process.env.TELEGRAM_CHANNEL_USERNAME);
 const express = require('express');
 const cors = require('cors');
 const app = express();
