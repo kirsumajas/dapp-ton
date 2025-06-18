@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path if needed
+import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path
 
 interface TaskCardProps {
   icon: React.ReactNode;
   title: string;
   reward: string;
   taskName: string;
-  telegramId?: string; // optional to allow fallback
+  telegramId?: string;
   onSuccess?: () => void;
 }
 
@@ -15,6 +15,7 @@ const TELEGRAM_CHANNEL_URL =
   import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://your-fallback-url.com';
+
 const TaskCard: React.FC<TaskCardProps> = ({
   icon,
   title,
@@ -28,12 +29,29 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const [stage, setStage] = useState<'start' | 'verify' | 'completed'>('start');
 
   useEffect(() => {
-    if (!propTelegramId) {
-      const id = getTelegramUserId();
+    const loadTelegramIdAndStatus = async () => {
+      const id = propTelegramId || getTelegramUserId();
       setTelegramId(id);
-      console.log('[DEBUG] Telegram ID:', id);
-    }
-  }, [propTelegramId]);
+
+      if (id) {
+        try {
+          const res = await axios.get(`${BACKEND_URL}/api/tasks/status`, {
+            params: {
+              telegramId: id,
+              taskName,
+            },
+          });
+          if (res.data?.completed) {
+            setStage('completed');
+          }
+        } catch (err) {
+          console.error('Error checking task status:', err);
+        }
+      }
+    };
+
+    loadTelegramIdAndStatus();
+  }, [propTelegramId, taskName]);
 
   const verifyAndReward = async () => {
     if (!telegramId) {
@@ -43,9 +61,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
     try {
       const endpoint =
-  taskName === 'subscribe-channel'
-    ? `${BACKEND_URL}/api/telegram/verify-subscription`
-    : `${BACKEND_URL}/api/tasks/verify`;
+        taskName === 'subscribe-channel'
+          ? `${BACKEND_URL}/api/telegram/verify-subscription`
+          : `${BACKEND_URL}/api/tasks/verify`;
 
       console.log('[DEBUG] Verifying task:', { telegramId, taskName, endpoint });
 

@@ -6,10 +6,10 @@ const {
   getTasksForUser
 } = require('../controllers/taskController');
 
-// Existing route
+// Existing route to verify and reward a task
 router.post('/verify', verifyAndRewardTask);
 
-// ✅ New route to manually add tasks via Postman
+// ✅ Route to manually add tasks via Postman
 router.post('/add', (req, res) => {
   const { name, title, description, reward } = req.body;
 
@@ -31,7 +31,29 @@ router.post('/add', (req, res) => {
   }
 });
 
-// ✅ Add this new GET endpoint
+
+// ✅ ✅ ✅ Add this before the dynamic /:telegramId route
+router.get('/status', (req, res) => {
+  const { telegramId, taskName } = req.query;
+
+  if (!telegramId || !taskName) {
+    return res.status(400).json({ completed: false, message: 'Missing telegramId or taskName' });
+  }
+
+  try {
+    const stmt = db.prepare(
+      'SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?'
+    );
+    const row = stmt.get(telegramId, taskName);
+    return res.json({ completed: !!row });
+  } catch (err) {
+    console.error('Error checking task status:', err);
+    return res.status(500).json({ completed: false });
+  }
+});
+
+
+// ✅ Dynamic route should be LAST
 router.get('/:telegramId', getTasksForUser);
 
 module.exports = router;
