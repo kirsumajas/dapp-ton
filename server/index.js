@@ -5,7 +5,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const db = require('./db/db');
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
 // Trust proxy (for rate limiting)
 app.set('trust proxy', 1);
 
@@ -22,7 +23,7 @@ const milestoneRoutes = require('./routes/milestones');
 const telegramRoutes = require('./routes/telegram');
 const airdropRoutes = require('./routes/airdrop');
 const tasksRoutes = require('./routes/tasks');
-
+const adminRoutes = require('./routes/admin');
 // Route Mounts
 app.use('/api/log', logRoute);
 app.use('/api/x', xRoutes);
@@ -32,6 +33,23 @@ app.use('/api/milestones', milestoneRoutes);
 app.use('/api/telegram', telegramRoutes);
 app.use('/api/airdrop', airdropRoutes);
 app.use('/api/tasks', tasksRoutes);
+app.use('/api/admin', adminRoutes);
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Chekhovsky Choppa DApp API',
+      version: '1.0.0',
+      description: 'Swagger UI for Telegram Mini App backend',
+    },
+  },
+  apis: ['./routes/*.js'], // Adjust if routes are elsewhere
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 // Server Start
 const PORT = process.env.PORT || 4000;

@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import TasksPage from './pages/TasksPage';
 import Collection from './pages/Collection';
 import WalletPage from './pages/WalletPage';
-
+import AdminPage from './pages/AdminPage';
 
 export default function App() {
    
@@ -17,6 +17,7 @@ export default function App() {
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/collection" element={<Collection />} />
           <Route path="/wallet" element={<WalletPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </Router>
     </TonConnectUIProvider>

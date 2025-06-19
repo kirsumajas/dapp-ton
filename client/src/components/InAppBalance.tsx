@@ -1,38 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { getTelegramUserId } from '../utils/getTelegramUser';
+import { useBalanceStore } from '../store/balanceStore';
 
 const InAppBalance: React.FC = () => {
-  const [balance, setBalance] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-
   const telegramId = getTelegramUserId();
+  const { balance, fetchBalance } = useBalanceStore();
 
   useEffect(() => {
-    if (!telegramId) return;
-
-    const fetchBalance = async () => {
-      try {
-        const res = await axios.get(`/api/balance/${telegramId}`);
-        setBalance(res.data.balance);
-      } catch (error) {
-        console.error('Failed to fetch balance:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBalance();
-  }, [telegramId]);
+    if (telegramId) {
+      fetchBalance(telegramId);
+    }
+  }, [telegramId, fetchBalance]);
 
   if (!telegramId) return null;
-  if (loading) return <p className="text-white px-4">Loading balance...</p>;
+  if (balance === null) return <p className="text-white px-4">Loading balance...</p>;
 
   return (
     <div className="text-white text-xl font-semibold px-4 mt-2">
-      🪙 Balance: {balance ?? 0} CHOP
+      🪙 Balance: {balance.toFixed(2)} CHOP
     </div>
   );
 };
 
-export default InAppBalance; 
+export default InAppBalance;

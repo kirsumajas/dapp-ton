@@ -5,7 +5,7 @@ import WithdrawForm from '../components/WithdrawForm';
 import logo from '../assets/Logo.svg';
 import WithdrawButton from '../components/WithdrawButton';
 import InAppBalance from '../components/InAppBalance';
-
+import BuyChopSection from '../components/BuyChopSection';
 export default function Wallet() {
   return (
     <PageLayout>
@@ -28,7 +28,7 @@ export default function Wallet() {
       
       {/* In-app balance section */}
       <InAppBalance/>
-
+      <BuyChopSection />
       {/* Withdraw form */}
       <div className="mt-6 px-4">
         <WithdrawForm />

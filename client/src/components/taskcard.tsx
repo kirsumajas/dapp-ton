@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path
+import { useBalanceStore } from '../store/balanceStore';
 
 interface TaskCardProps {
   icon: React.ReactNode;
@@ -27,6 +28,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const [telegramId, setTelegramId] = useState<string | null>(propTelegramId || null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [stage, setStage] = useState<'start' | 'verify' | 'completed'>('start');
+  const { fetchBalance } = useBalanceStore();
 
   useEffect(() => {
     const loadTelegramIdAndStatus = async () => {
@@ -76,6 +78,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
         alert('✅ Task completed & reward added!');
         setStage('completed');
         onSuccess?.();
+
+        if (telegramId) {
+        await fetchBalance(telegramId);
+        }
+
         return true;
       } else {
         const msg = res.data.message || '';
