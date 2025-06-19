@@ -3,9 +3,8 @@ import react from '@vitejs/plugin-react';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-
 export default defineConfig({
-  base: '/dapp-ton/',
+  base: '/dapp-ton/', // ✅ MUST match your GitHub repo name
   plugins: [
     react(),
     nodePolyfills({
@@ -28,5 +27,5 @@ export default defineConfig({
         }),
       ],
     },
-  }
+  },
 });

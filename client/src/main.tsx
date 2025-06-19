@@ -6,13 +6,24 @@ import WebApp from '@twa-dev/sdk';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { Buffer } from 'buffer';
 
+// Polyfill Buffer for TonConnect or other SDKs
+(window as any).Buffer = Buffer;
+
+// Detect if running on mobile (basic check)
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 // Telegram WebApp readiness
 WebApp.ready();
 WebApp.expand();
-WebApp.requestFullscreen();
 
-(window as any).Buffer = Buffer;
+// Only request fullscreen on mobile Telegram app
+if (isMobile) {
+  try {
+    WebApp.requestFullscreen();
+  } catch (e) {
+    console.warn('Fullscreen not supported:', e);
+  }
+}
 
 import { logToBackend } from './utils/logToBackend';
 
@@ -32,6 +43,7 @@ const setAppHeight = () => {
 };
 
 setAppHeight();
+
 // Listen to Telegram viewport change events
 WebApp.onEvent('viewportChanged', (event) => {
   if (event.isStateStable) {
@@ -39,11 +51,11 @@ WebApp.onEvent('viewportChanged', (event) => {
   }
 });
 
-// 🚀 Wrap with TonConnectUIProvider
+// Mount app
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <TonConnectUIProvider
-       manifestUrl="https://kirsumajas.github.io/dapp-ton/tonconnect-manifest.json"
+      manifestUrl="https://kirsumajas.github.io/dapp-ton/tonconnect-manifest.json"
     >
       <App />
     </TonConnectUIProvider>
