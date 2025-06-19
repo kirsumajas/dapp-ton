@@ -1,13 +1,13 @@
+<!-- public/404.html -->
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <script type="text/javascript">
-      const redirectPath = location.pathname.replace('/dapp-ton', '');
-      sessionStorage.setItem('redirect', '/dapp-ton' + redirectPath + location.search + location.hash);
+    <script>
+      const redirectPath = location.pathname + location.search + location.hash;
+      sessionStorage.setItem('redirect', redirectPath);
       location.replace('/dapp-ton/');
     </script>
   </head>
   <body></body>
 </html>
-
