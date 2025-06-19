@@ -2,11 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Redirecting…</title>
-    <script>
-      sessionStorage.redirect = location.pathname + location.search;
-      window.location.replace("/dapp-ton/");
+    <script type="text/javascript">
+      const redirectPath = location.pathname.replace('/dapp-ton', '');
+      sessionStorage.setItem('redirect', '/dapp-ton' + redirectPath + location.search + location.hash);
+      location.replace('/dapp-ton/');
     </script>
   </head>
   <body></body>
 </html>
+
