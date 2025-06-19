@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; URL=/dapp-ton/" />
+    <meta charset="UTF-8" />
+    <title>Redirecting…</title>
+    <script>
+      sessionStorage.redirect = location.pathname + location.search;
+      window.location.replace("/dapp-ton/");
+    </script>
   </head>
   <body></body>
 </html>
