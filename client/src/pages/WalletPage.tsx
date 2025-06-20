@@ -36,10 +36,10 @@ export default function Wallet() {
       {/* Wallet connect button */}
         <ConnectWalletButton />
       </section>
-      <TransactionHistory telegramId={telegramId} />
+      
       {/* In-app balance card */}
       <InAppCard balance={1000} onWithdraw={() => setShowAlert(true)} />
-
+      <TransactionHistory telegramId={telegramId} />
       {/* Spacer */}
       <div className="h-[40px]"></div>
       <StatsCard

@@ -26,7 +26,6 @@ const tasksRoutes = require('./routes/tasks');
 const adminRoutes = require('./routes/admin');
 const historyRoutes = require('./routes/history');
 
-
 // Route Mounts
 app.use('/api/log', logRoute);
 app.use('/api/x', xRoutes);
