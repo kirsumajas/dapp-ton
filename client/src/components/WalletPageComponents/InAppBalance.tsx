@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { getTelegramUserId } from '../utils/getTelegramUser';
-import { useBalanceStore } from '../store/balanceStore';
+import { getTelegramUserId } from '../../utils/getTelegramUser';
+import { useBalanceStore } from '../../store/balanceStore';
 
 const InAppBalance: React.FC = () => {
   const telegramId = getTelegramUserId();

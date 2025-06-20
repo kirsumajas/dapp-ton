@@ -1,7 +1,9 @@
+// src/components/TasksPageComponents/TaskCard.tsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path
-import { useBalanceStore } from '../store/balanceStore';
+import { getTelegramUserId } from '../../utils/getTelegramUser';
+import { useBalanceStore } from '../../store/balanceStore';
+import { fetchTaskStatus } from '../../api/tasks';
+import { checkAndVerifyTask } from '../../handlers/taskHandler';
 
 interface TaskCardProps {
   icon: React.ReactNode;
@@ -14,8 +16,6 @@ interface TaskCardProps {
 
 const TELEGRAM_CHANNEL_URL =
   import.meta.env.VITE_TELEGRAM_CHANNEL_URL || 'https://t.me/fallback_channel';
-
-const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://your-fallback-url.com';
 
 const TaskCard: React.FC<TaskCardProps> = ({
   icon,
@@ -31,28 +31,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const { fetchBalance } = useBalanceStore();
 
   useEffect(() => {
-    const loadTelegramIdAndStatus = async () => {
+    const init = async () => {
       const id = propTelegramId || getTelegramUserId();
       setTelegramId(id);
+      if (!id) return;
 
-      if (id) {
-        try {
-          const res = await axios.get(`${BACKEND_URL}/api/tasks/status`, {
-            params: {
-              telegramId: id,
-              taskName,
-            },
-          });
-          if (res.data?.completed) {
-            setStage('completed');
-          }
-        } catch (err) {
-          console.error('Error checking task status:', err);
-        }
-      }
+      const completed = await fetchTaskStatus(id, taskName);
+      if (completed) setStage('completed');
     };
-
-    loadTelegramIdAndStatus();
+    init();
   }, [propTelegramId, taskName]);
 
   const verifyAndReward = async () => {
@@ -61,47 +48,26 @@ const TaskCard: React.FC<TaskCardProps> = ({
       return false;
     }
 
-    try {
-      const endpoint =
-        taskName === 'subscribe-channel'
-          ? `${BACKEND_URL}/api/telegram/verify-subscription`
-          : `${BACKEND_URL}/api/tasks/verify`;
+    const result = await checkAndVerifyTask({ telegramId, taskName });
 
-      console.log('[DEBUG] Verifying task:', { telegramId, taskName, endpoint });
-
-      const res = await axios.post(endpoint, {
-        telegramId,
-        taskName,
-      });
-
-      if (res.data.success) {
+    switch (result) {
+      case 'success':
         alert('✅ Task completed & reward added!');
         setStage('completed');
         onSuccess?.();
-
-        if (telegramId) {
         await fetchBalance(telegramId);
-        }
-
         return true;
-      } else {
-        const msg = res.data.message || '';
-        if (msg.toLowerCase().includes('not subscribed')) {
-          return false;
-        }
-        if (msg.toLowerCase().includes('already')) {
-          alert('⚠️ Task already completed.');
-          setStage('completed');
-          return true;
-        }
-        alert('⚠️ Verification failed.');
-      }
-    } catch (err) {
-      console.error('Verification error:', err);
-      alert('❌ Something went wrong.');
+      case 'already':
+        alert('⚠️ Task already completed.');
+        setStage('completed');
+        return true;
+      case 'not-subscribed':
+        return false;
+      case 'error':
+      default:
+        alert('❌ Verification failed.');
+        return false;
     }
-
-    return false;
   };
 
   const handleStart = async () => {

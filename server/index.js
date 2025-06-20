@@ -24,6 +24,9 @@ const telegramRoutes = require('./routes/telegram');
 const airdropRoutes = require('./routes/airdrop');
 const tasksRoutes = require('./routes/tasks');
 const adminRoutes = require('./routes/admin');
+const historyRoutes = require('./routes/history');
+
+
 // Route Mounts
 app.use('/api/log', logRoute);
 app.use('/api/x', xRoutes);
@@ -34,6 +37,7 @@ app.use('/api/telegram', telegramRoutes);
 app.use('/api/airdrop', airdropRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/wallet', historyRoutes);
 
 const swaggerOptions = {
   definition: {

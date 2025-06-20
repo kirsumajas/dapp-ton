@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchNotcoinPoolStats } from '../lib/stonfi';
+import { fetchNotcoinPoolStats } from '../../lib/stonfi';
 
 export default function JettonStats() {
   const [stats, setStats] = useState<{

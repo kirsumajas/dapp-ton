@@ -1,12 +1,26 @@
+import { useState } from 'react';
 import ConnectWalletButton from '../components/ConnectWalletButton';
-import JettonStats from '../components/JettonStats';
 import PageLayout from '../components/PageLayout';
-import WithdrawForm from '../components/WithdrawForm';
 import logo from '../assets/Logo.svg';
-import WithdrawButton from '../components/WithdrawButton';
-import InAppBalance from '../components/InAppBalance';
-import BuyChopSection from '../components/BuyChopSection';
+import InAppCard from '../components/WalletPageComponents/InAppCard';
+import AlertModal from '../components/AlertModal';
+import StatsCard from '../components/WalletPageComponents/JettonCard';
+import TransactionHistory from '../components/WalletPageComponents/TransactionHistory';
+import { getTelegramUserId } from '../utils/getTelegramUser';
+
 export default function Wallet() {
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleWithdraw = () => {
+    console.log('Proceeding with withdrawal...');
+    setShowAlert(false);
+    // Optionally trigger WithdrawForm submission or show withdraw section
+  };
+  const telegramId = getTelegramUserId(); // or however you retrieve it
+
+  if (!telegramId) {
+    return <div className="text-white p-4">⚠️ Telegram ID not found.</div>;
+  }
   return (
     <PageLayout>
       {/* Header */}
@@ -19,26 +33,38 @@ export default function Wallet() {
           />
         </div>
 
-        {/* Custom wallet connect button or address */}
+      {/* Wallet connect button */}
         <ConnectWalletButton />
       </section>
+      <TransactionHistory telegramId={telegramId} />
+      {/* In-app balance card */}
+      <InAppCard balance={1000} onWithdraw={() => setShowAlert(true)} />
 
-      {/* Jetton statistics section */}
-      <JettonStats />
-      
-      {/* In-app balance section */}
-      <InAppBalance/>
-      <BuyChopSection />
-      {/* Withdraw form */}
-      <div className="mt-6 px-4">
-        <WithdrawForm />
-      </div>
-      {/* Withdraw button section */}
-      <div className="p-4">
-      <h2 className="text-white text-lg mb-2">Withdraw your earnings</h2>
-      <WithdrawButton amount={0.5} />
-    </div>
+      {/* Spacer */}
+      <div className="h-[40px]"></div>
+      <StatsCard
+        price={0.005}
+        liquidity={12000}
+        holders={734}
+        circulating={870000000}
+        onBuyClick={() => window.open('https://getgems.io/...', '_blank')}
+      />
 
+      {/* Spacer */}
+      <div className="h-[40px]"></div>
+
+      {/* Slide-up alert modal */}
+      <AlertModal
+        isOpen={showAlert}
+        onClose={() => setShowAlert(false)}
+        title="Gas Fee Required"
+        message="You need to pay a small gas fee to process the withdrawal transaction."
+        confirmText="Proceed"
+        onConfirm={handleWithdraw}
+      />
+
+      {/* Scroll buffer to avoid nav overlap */}
+      <div className="h-[80px]"></div>
     </PageLayout>
   );
 }

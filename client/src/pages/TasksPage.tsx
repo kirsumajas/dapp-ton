@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import PageLayout from '../components/PageLayout';
-import AirdropFrame from '../components/frame';
+import AirdropFrame from '../components/TasksPageComponents/frame';
 import logo from '../assets/Logo.svg';
 import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
-import TaskCard from '../components/taskcard';
+import TaskCard from '../components/TasksPageComponents/taskcard';
 import TelegramIconTasks from '../components/socialMediaIcons/TelegramIconTasks';
 import XIconTasks from '../components/socialMediaIcons/XIconTasks';
 import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path if needed
@@ -50,12 +50,10 @@ const TasksPage = () => {
         </div>
         <ButtonCreateWallet className="w-[127px] h-[46px]" />
       </section>
-
       <div className="px-4 pt-safe-top pb-safe-bottom space-y-6">
         <AirdropFrame />
-        <h2 className="text-2xl font-bold mb-4">📋 Your Tasks</h2>
+        <h2 className="text-2xl font-bold mb-4">Tasks</h2>
       </div>
-
       <div className="pt-[calc(env(safe-area-inset-top)+92px)] px-3 pb-20">
         {tasks.map((task) => (
           <TaskCard
@@ -75,7 +73,6 @@ const TasksPage = () => {
           />
         ))}
       </div>
-      
     </PageLayout>
   );
 };

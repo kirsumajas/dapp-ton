@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useWalletStore } from '../store/walletStore';
-import { requestWithdraw } from '../api/withdraw';
+import { useWalletStore } from '../../store/walletStore';
+import { requestWithdraw } from '../../api/withdraw';
 
 export default function WithdrawForm() {
   const { address } = useWalletStore();

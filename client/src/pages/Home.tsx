@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
-import SeasonTabs from '../components/SeasonTabs';
-import OverlapWrapper from '../components/OverlapWrapper';
+import SeasonTabs from '../components/HomePageComponents/SeasonTabs';
+import OverlapWrapper from '../components/HomePageComponents/OverlapWrapper';
 import logo from '../assets/Logo.svg';
 import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
-import InfoCards from '../components/InfoCards';
-import ProgressCard from '../components/ProgressCard';
-import SeasonGoals from '../components/SeasonGoals';
+import InfoCards from '../components/HomePageComponents/InfoCards';
+import ProgressCard from '../components/HomePageComponents/ProgressCard';
+import SeasonGoals from '../components/HomePageComponents/SeasonGoals';
 
 export default function Home() {
   const [season, setSeason] = useState('Preseason');

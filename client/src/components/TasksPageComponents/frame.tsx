@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import ButtonClaimAirdrop from './buttons/ButtonClaimAirdrop';
-import { useAirdropStore } from '../store/airdropStore';
+import ButtonClaimAirdrop from '../buttons/ButtonClaimAirdrop';
+import { useAirdropStore } from '../../store/airdropStore';
 
 const AirdropFrame: React.FC = () => {
   const airdropEnd = useAirdropStore((s) => s.airdropEnd);

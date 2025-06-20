@@ -1,6 +1,6 @@
 // src/components/BuyChopSection.tsx
 import React, { useState } from 'react';
-import SlideUpPopup from './SlideUpPopup';
+import SlideUpPopup from '../SlideUpPopup';
 
 const BuyChopSection: React.FC = () => {
   const [popupOpen, setPopupOpen] = useState(false);
