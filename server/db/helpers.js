@@ -19,13 +19,14 @@ function addTaskReward(telegramId, amount, taskName) {
   const logTask = db.prepare('INSERT INTO task_completions (telegram_id, task_name) VALUES (?, ?)');
   logTask.run(telegramId, taskName);
 
-  // ✅ Log the reward into user_rewards with task_name
+  // ✅ Add reward log with task name
   const logReward = db.prepare(`
     INSERT INTO user_rewards (telegram_id, amount, reward_type, task_name)
     VALUES (?, ?, 'task', ?)
   `);
   logReward.run(telegramId, amount, taskName);
 }
+
 
 
 module.exports = {
