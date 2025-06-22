@@ -23,7 +23,6 @@ const logRoute = require('./routes/log');
 const withdrawRoute = require('./routes/withdraw');
 const balanceRoutes = require('./routes/balance');
 const milestoneRoutes = require('./routes/milestones');
-const telegramRoutes = require('./routes/telegram'); // optional, can also be removed
 const airdropRoutes = require('./routes/airdrop');
 const tasksRoutes = require('./routes/tasks');
 const adminRoutes = require('./routes/admin');
@@ -35,7 +34,7 @@ app.use('/api/log', logRoute);
 app.use('/api/withdraw', withdrawRoute);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/milestones', milestoneRoutes);
-app.use('/api/telegram', telegramRoutes); // ✅ Can keep if quiz or fallback needed
+ // ✅ Can keep if quiz or fallback needed
 app.use('/api/airdrop', airdropRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/admin', adminRoutes);
