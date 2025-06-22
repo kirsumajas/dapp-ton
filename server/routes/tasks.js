@@ -1,3 +1,53 @@
+router.post('/verify', verifyAndRewardTask);
+/**
+ * @swagger
+ * /api/tasks/verify:
+ *   post:
+ *     summary: Verify a task and reward the user
+ *     description: Verifies a user's task completion and adds in-app rewards.
+ *     tags:
+ *       - Tasks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - telegramId
+ *               - taskName
+ *             properties:
+ *               telegramId:
+ *                 type: string
+ *                 example: "123456789"
+ *               taskName:
+ *                 type: string
+ *                 example: "follow-x"
+ *     responses:
+ *       200:
+ *         description: Reward applied
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Task verified and reward added
+ *                 reward:
+ *                   type: number
+ *                   example: 0.1
+ *       403:
+ *         description: Verification failed
+ *       404:
+ *         description: Task not found
+ *       409:
+ *         description: Task already completed
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
