@@ -6,7 +6,8 @@ import ButtonCreateWallet from '../components/buttons/ButtonCreateWallet';
 import TaskCard from '../components/TasksPageComponents/taskcard';
 import TelegramIconTasks from '../components/socialMediaIcons/TelegramIconTasks';
 import XIconTasks from '../components/socialMediaIcons/XIconTasks';
-import { getTelegramUserId } from '../utils/getTelegramUser'; // adjust path if needed
+import TonQuizModal from '../components/TasksPageComponents/TonQuizModal';
+import { getTelegramUserId } from '../utils/getTelegramUser';
 
 type Task = {
   name: string;
@@ -21,6 +22,7 @@ const BASE_URL =
 const TasksPage = () => {
   const telegramId = getTelegramUserId();
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const fetchTasks = async () => {
     if (!telegramId) return;
@@ -50,29 +52,58 @@ const TasksPage = () => {
         </div>
         <ButtonCreateWallet className="w-[127px] h-[46px]" />
       </section>
+
       <div className="px-4 pt-safe-top pb-safe-bottom space-y-6">
         <AirdropFrame />
         <h2 className="text-2xl font-bold mb-4">Tasks</h2>
       </div>
-      <div className="pt-[calc(env(safe-area-inset-top)+92px)] px-3 pb-20">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.name}
-            icon={
-              task.name === 'subscribe-channel' ? (
-                <TelegramIconTasks />
-              ) : (
-                <XIconTasks />
-              )
-            }
-            title={task.title}
-            reward={`${task.reward * 100} CHOP`}
-            taskName={task.name}
-            telegramId={telegramId || ''}
-            onSuccess={fetchTasks}
-          />
-        ))}
+
+      <div className="pt-[calc(env(safe-area-inset-top)+92px)] px-3 pb-20 space-y-4">
+        {tasks.map((task) => {
+          if (task.name === 'ton-quiz') {
+            return (
+              <div key={task.name} onClick={() => setShowQuiz(true)}>
+                <TaskCard
+                  icon={<div className="text-xl">🧠</div>}
+                  title={task.title}
+                  reward={`${task.reward * 100} CHOP`}
+                  taskName={task.name}
+                  telegramId={telegramId || ''}
+                  onSuccess={fetchTasks}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <TaskCard
+              key={task.name}
+              icon={
+                task.name === 'subscribe-channel' ? (
+                  <TelegramIconTasks />
+                ) : (
+                  <XIconTasks />
+                )
+              }
+              title={task.title}
+              reward={`${task.reward * 100} CHOP`}
+              taskName={task.name}
+              telegramId={telegramId || ''}
+              onSuccess={fetchTasks}
+            />
+          );
+        })}
       </div>
+
+      {/* TON Quiz Modal */}
+      <TonQuizModal
+        isOpen={showQuiz}
+        onClose={() => setShowQuiz(false)}
+        onComplete={() => {
+          setShowQuiz(false);
+          console.log('✅ Quiz completed – reward logic comes next');
+        }}
+      />
     </PageLayout>
   );
 };

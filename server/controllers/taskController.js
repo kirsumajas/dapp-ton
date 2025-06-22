@@ -1,9 +1,10 @@
 const db = require('../db/db');
 
-// Optional: Verification logic based on task name
+// Optional task verification logic
 const verificationHandlers = {
   'subscribe-channel': require('./telegramController').verifyTelegram,
-  'follow-x': require('./xController').verifyXFollow
+  'follow-x': require('./xController').verifyXFollow,
+  'quiz': async () => true // Quiz is client-side only
 };
 
 exports.verifyAndRewardTask = async (req, res) => {
@@ -13,56 +14,40 @@ exports.verifyAndRewardTask = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing telegramId or taskName' });
   }
 
-  // Check if task exists
-  const taskStmt = db.prepare('SELECT * FROM tasks WHERE name = ?');
-  const task = taskStmt.get(taskName);
-
+  const task = db.prepare('SELECT * FROM tasks WHERE name = ?').get(taskName);
   if (!task) {
     return res.status(404).json({ success: false, message: 'Task not found' });
   }
 
-  // Check if already completed
-  const checkStmt = db.prepare('SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?');
-  const alreadyCompleted = checkStmt.get(telegramId, taskName);
-
-  if (alreadyCompleted) {
-    return res.status(200).json({ success: false, message: 'Task already completed' });
+  const completed = db.prepare('SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?')
+    .get(telegramId, taskName);
+  if (completed) {
+    return res.status(409).json({ success: false, message: 'Task already completed' });
   }
 
-  // Optional: run a verification handler
+  // Optional verification logic
   const verify = verificationHandlers[taskName];
   if (verify) {
-    const verified = await verify(telegramId);
-    if (!verified) {
-      console.log('[VERIFY FAILED]', taskName, telegramId);
+    const result = await verify(telegramId);
+    if (!result) {
+      console.log(`[VERIFY FAILED] ${taskName} for ${telegramId}`);
       return res.status(403).json({ success: false, message: 'Verification failed' });
     }
   }
 
-  // ✅ Ensure user exists to avoid foreign key constraint errors
-  db.prepare('INSERT OR IGNORE INTO users (telegram_id, balance) VALUES (?, 0)').run(telegramId);
-
-  // Insert into task_completions
-  db.prepare(`
-    INSERT INTO task_completions (telegram_id, task_name)
-    VALUES (?, ?)
-  `).run(telegramId, taskName);
-
-  // Log reward
-  db.prepare(`
-    INSERT INTO user_rewards (telegram_id, amount, reward_type)
-    VALUES (?, ?, ?)
-  `).run(telegramId, task.reward, taskName);
-
-  // ✅ Update in-app balance
-  db.prepare(`
-    UPDATE users SET balance = balance + ? WHERE telegram_id = ?
-  `).run(task.reward, telegramId);
-
-  return res.json({ success: true, message: 'Task verified and in-app reward added' });
+  // Reward via helper
+  const { addTaskReward } = require('../db/helpers');
+  try {
+    addTaskReward(telegramId, task.reward, taskName);
+    return res.json({ success: true, message: 'Task verified and reward added' });
+  } catch (err) {
+    console.error('Reward Error:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
 };
+
 exports.getTasksForUser = (req, res) => {
-  const telegramId = req.params.telegramId;
+  const { telegramId } = req.params;
 
   if (!telegramId) {
     return res.status(400).json({ success: false, message: 'Missing telegramId' });
@@ -70,21 +55,19 @@ exports.getTasksForUser = (req, res) => {
 
   try {
     const allTasks = db.prepare('SELECT * FROM tasks').all();
-    const completed = db.prepare(
-      'SELECT task_name FROM task_completions WHERE telegram_id = ?'
-    ).all(telegramId);
+    const completed = db.prepare('SELECT task_name FROM task_completions WHERE telegram_id = ?')
+      .all(telegramId)
+      .map(row => row.task_name);
 
-    const completedNames = new Set(completed.map(t => t.task_name));
-
+    const completedSet = new Set(completed);
     const tasks = allTasks.map(task => ({
       ...task,
-      completed: completedNames.has(task.name)
+      completed: completedSet.has(task.name)
     }));
 
     return res.json({ success: true, tasks });
   } catch (err) {
-    console.error('Error fetching tasks:', err);
+    console.error('Fetch Tasks Error:', err);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
-
