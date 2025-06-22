@@ -1,4 +1,11 @@
-router.post('/verify', verifyAndRewardTask);
+const express = require('express');
+const router = express.Router();
+const db = require('../db/db');
+const {
+  verifyAndRewardTask,
+  getTasksForUser
+} = require('../controllers/taskController');
+
 /**
  * @swagger
  * /api/tasks/verify:
@@ -47,19 +54,9 @@ router.post('/verify', verifyAndRewardTask);
  *       409:
  *         description: Task already completed
  */
-
-const express = require('express');
-const router = express.Router();
-const db = require('../db/db');
-const {
-  verifyAndRewardTask,
-  getTasksForUser
-} = require('../controllers/taskController');
-
-// Existing route to verify and reward a task
 router.post('/verify', verifyAndRewardTask);
 
-// ✅ Route to manually add tasks via Postman
+// Route to manually add tasks via Postman
 router.post('/add', (req, res) => {
   const { name, title, description, reward } = req.body;
 
@@ -73,7 +70,6 @@ router.post('/add', (req, res) => {
       VALUES (?, ?, ?, ?)
     `);
     stmt.run(name, title, description || '', reward);
-
     return res.json({ success: true, message: 'Task added' });
   } catch (err) {
     console.error('Error inserting task:', err);
@@ -81,8 +77,7 @@ router.post('/add', (req, res) => {
   }
 });
 
-
-// ✅ ✅ ✅ Add this before the dynamic /:telegramId route
+// Route to check if user completed a task
 router.get('/status', (req, res) => {
   const { telegramId, taskName } = req.query;
 
@@ -102,8 +97,7 @@ router.get('/status', (req, res) => {
   }
 });
 
-
-// ✅ Dynamic route should be LAST
+// Final catch-all route for task listing
 router.get('/:telegramId', getTasksForUser);
 
 module.exports = router;
