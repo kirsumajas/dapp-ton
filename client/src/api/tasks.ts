@@ -15,15 +15,33 @@ export async function fetchTaskStatus(telegramId: string, taskName: string): Pro
   }
 }
 
-export async function verifyTask(telegramId: string, taskName: string): Promise<{
+export async function verifyTask(
+  telegramId: string,
+  taskName: string
+): Promise<{
   success: boolean;
   message?: string;
+  status: number;
 }> {
   const endpoint =
     taskName === 'subscribe-channel'
       ? `${BASE_API}/api/telegram/verify-subscription`
       : `${BASE_API}/api/tasks/verify`;
 
-  const res = await axios.post(endpoint, { telegramId, taskName });
-  return res.data;
+  try {
+    const res = await axios.post(endpoint, { telegramId, taskName });
+
+    return {
+      ...res.data,
+      status: res.status,
+    };
+  } catch (err: any) {
+    const status = err.response?.status ?? 500;
+    const message = err.response?.data?.message ?? 'Unknown error';
+    return {
+      success: false,
+      message,
+      status,
+    };
+  }
 }
