@@ -45,9 +45,9 @@ async function verifyFollowAndReward(req, res) {
 
     // Log reward
     db.prepare(`
-      INSERT INTO user_rewards (telegram_id, amount, reward_type)
-      VALUES (?, ?, ?)
-    `).run(telegramId, rewardAmount, 'follow-x');
+      INSERT INTO user_rewards (telegram_id, amount, reward_type, task_name)
+      VALUES (?, ?, ?, ?)
+    `).run(telegramId, rewardAmount, 'task', 'follow-x');
 
     res.json({ success: true, message: 'Reward sent' });
   } catch (err) {
