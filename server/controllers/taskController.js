@@ -1,10 +1,11 @@
 const db = require('../db/db');
+const { rewardUserForTask } = require('../services/rewardService');
 
 // Optional task verification logic
 const verificationHandlers = {
   'subscribe-channel': require('./telegramController').verifyTelegram,
   'follow-x': require('./xController').verifyXFollow,
-  'quiz': async () => true // Quiz is client-side only
+  'quiz': async () => true // frontend-only task
 };
 
 exports.verifyAndRewardTask = async (req, res) => {
@@ -14,18 +15,6 @@ exports.verifyAndRewardTask = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing telegramId or taskName' });
   }
 
-  const task = db.prepare('SELECT * FROM tasks WHERE name = ?').get(taskName);
-  if (!task) {
-    return res.status(404).json({ success: false, message: 'Task not found' });
-  }
-
-  const completed = db.prepare('SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?')
-    .get(telegramId, taskName);
-  if (completed) {
-    return res.status(409).json({ success: false, message: 'Task already completed' });
-  }
-
-  // Optional verification logic
   const verify = verificationHandlers[taskName];
   if (verify) {
     const result = await verify(telegramId);
@@ -35,16 +24,16 @@ exports.verifyAndRewardTask = async (req, res) => {
     }
   }
 
-  // Reward via helper
-  const { addTaskReward } = require('../db/helpers');
   try {
-    addTaskReward(telegramId, task.reward, taskName);
-    return res.json({ success: true, message: 'Task verified and reward added' });
+    const reward = rewardUserForTask(telegramId, taskName);
+    return res.json({ success: true, message: 'Task verified and reward added', reward });
   } catch (err) {
-    console.error('Reward Error:', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    const status = err.message === 'Task already completed' ? 409 :
+                   err.message === 'Task not found' ? 404 : 500;
+    return res.status(status).json({ success: false, message: err.message });
   }
 };
+
 
 exports.getTasksForUser = (req, res) => {
   const { telegramId } = req.params;
