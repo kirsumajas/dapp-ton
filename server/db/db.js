@@ -63,6 +63,13 @@ db.exec(`
   );
 `);
 
+try {
+  db.exec(`ALTER TABLE user_rewards ADD COLUMN task_name TEXT;`);
+  console.log('✅ Column "task_name" added to user_rewards');
+} catch (e) {
+  console.log('⚠️ Could not add "task_name" column (might already exist):', e.message);
+}
+
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS tasks (
