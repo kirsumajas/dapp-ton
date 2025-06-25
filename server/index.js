@@ -10,6 +10,7 @@ const db = require('./db/db');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 
+
 // Trust proxy (for rate limiting)
 app.set('trust proxy', 1);
 
@@ -20,6 +21,7 @@ app.use(express.json());
 // Route Imports
 const logRoute = require('./routes/log');
 // const xRoutes = require('./routes/x'); ❌ Removed — handled via tasks/verify
+const telegramRoutes = require('./routes/telegram');
 const withdrawRoute = require('./routes/withdraw');
 const balanceRoutes = require('./routes/balance');
 const milestoneRoutes = require('./routes/milestones');
@@ -35,6 +37,7 @@ app.use('/api/withdraw', withdrawRoute);
 app.use('/api/balance', balanceRoutes);
 app.use('/api/milestones', milestoneRoutes);
  // ✅ Can keep if quiz or fallback needed
+ app.use('/api/telegram', telegramRoutes);
 app.use('/api/airdrop', airdropRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/admin', adminRoutes);
