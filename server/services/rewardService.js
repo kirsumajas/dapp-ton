@@ -10,26 +10,29 @@ const db = require('../db/db');
  * - Updating in-app balance
  */
 function rewardUserForTask(telegramId, taskName) {
-  // Fetch task and reward
+  console.log(`--> rewardUserForTask called with telegramId=${telegramId}, taskName=${taskName}`);
+
   const task = db.prepare('SELECT * FROM tasks WHERE name = ?').get(taskName);
   if (!task) {
+    console.error(`[REWARD ERROR] Task not found: ${taskName}`);
     throw new Error('Task not found');
   }
 
-  // Check for duplicate completion
   const completed = db.prepare(
     'SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?'
   ).get(telegramId, taskName);
 
   if (completed) {
+    console.warn(`[REWARD SKIPPED] Task already completed for ${telegramId}: ${taskName}`);
     throw new Error('Task already completed');
   }
 
-  // Ensure user exists
-  db.prepare('INSERT OR IGNORE INTO users (telegram_id, balance) VALUES (?, 0)')
-    .run(telegramId);
+  console.log(`[REWARD] Task found. Proceeding to reward user ${telegramId} with ${task.reward}`);
 
-  // Insert completion log
+  // Ensure user exists
+  db.prepare('INSERT OR IGNORE INTO users (telegram_id, balance) VALUES (?, 0)').run(telegramId);
+
+  // Insert task completion
   db.prepare(`
     INSERT INTO task_completions (telegram_id, task_name)
     VALUES (?, ?)
@@ -41,13 +44,16 @@ function rewardUserForTask(telegramId, taskName) {
     VALUES (?, ?, 'task', ?)
   `).run(telegramId, task.reward, taskName);
 
-  // Update balance
+  // Update user balance
   db.prepare(`
     UPDATE users SET balance = balance + ? WHERE telegram_id = ?
   `).run(task.reward, telegramId);
 
+  console.log(`[REWARD SUCCESS] +${task.reward} to ${telegramId} for task: ${taskName}`);
+
   return task.reward;
 }
+
 
 module.exports = {
   rewardUserForTask,
