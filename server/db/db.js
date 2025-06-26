@@ -73,5 +73,15 @@ db.exec(`
   );
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    telegram_id TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('task', 'airdrop', 'withdraw')),
+    amount REAL NOT NULL,
+    task_name TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
 
 module.exports = db;

@@ -41,7 +41,7 @@ app.use('/api/milestones', milestoneRoutes);
 app.use('/api/airdrop', airdropRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/wallet', historyRoutes);
+app.use('/api/history', historyRoutes); // ✅
 
 // Swagger config
 const swaggerOptions = {

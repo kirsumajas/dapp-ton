@@ -50,6 +50,12 @@ function rewardUserForTask(telegramId, taskName) {
   `).run(task.reward, telegramId);
 
   console.log(`[REWARD SUCCESS] +${task.reward} to ${telegramId} for task: ${taskName}`);
+  
+  // Update history table
+  db.prepare(`
+  INSERT INTO history (telegram_id, type, amount, task_name)
+  VALUES (?, 'task', ?, ?)
+`).run(telegramId, task.reward, taskName);
 
   return task.reward;
 }
