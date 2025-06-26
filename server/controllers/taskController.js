@@ -15,16 +15,6 @@ exports.verifyAndRewardTask = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing telegramId or taskName' });
   }
 
-  // ✅ STEP 1: Check for prior completion FIRST
-  const alreadyCompleted = db.prepare(
-    'SELECT 1 FROM task_completions WHERE telegram_id = ? AND task_name = ?'
-  ).get(telegramId, taskName);
-
-  if (alreadyCompleted) {
-    return res.status(409).json({ success: false, message: 'Task already completed' });
-  }
-
-  // ✅ STEP 2: Run dynamic verification logic
   const verify = verificationHandlers[taskName];
   if (verify) {
     const result = await verify(telegramId);
@@ -34,15 +24,16 @@ exports.verifyAndRewardTask = async (req, res) => {
     }
   }
 
-  // ✅ STEP 3: Apply reward if passed
   try {
     const reward = rewardUserForTask(telegramId, taskName);
     return res.json({ success: true, message: 'Task verified and reward added', reward });
   } catch (err) {
-    const status = err.message === 'Task not found' ? 404 : 500;
+    const status = err.message === 'Task already completed' ? 409 :
+                   err.message === 'Task not found' ? 404 : 500;
     return res.status(status).json({ success: false, message: err.message });
   }
 };
+
 
 exports.getTasksForUser = (req, res) => {
   const { telegramId } = req.params;
