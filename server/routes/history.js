@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../db/db');
 
 // GET /api/wallet/history/:telegramId
-router.get('/history/:telegramId', (req, res) => {
+router.get('/:telegramId', (req, res) => {
   const { telegramId } = req.params;
 
   if (!telegramId) {
