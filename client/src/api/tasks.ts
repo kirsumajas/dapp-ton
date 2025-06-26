@@ -23,10 +23,8 @@ export async function verifyTask(
   message?: string;
   status: number;
 }> {
-  const endpoint =
-    taskName === 'subscribe-channel'
-      ? `${BASE_API}/api/telegram/verify-subscription`
-      : `${BASE_API}/api/tasks/verify`;
+  // ✅ Always use unified /api/tasks/verify
+  const endpoint = `${BASE_API}/api/tasks/verify`;
 
   try {
     const res = await axios.post(endpoint, { telegramId, taskName });
@@ -45,3 +43,4 @@ export async function verifyTask(
     };
   }
 }
+
