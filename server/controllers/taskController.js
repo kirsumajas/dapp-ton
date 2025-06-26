@@ -3,7 +3,7 @@ const { rewardUserForTask } = require('../services/rewardService');
 
 // Optional task verification logic
 const verificationHandlers = {
-  'subscribe-channel': require('./telegramController').verifySubscription,
+  'subscribe-channel': verifySubscriptionStatus,
   'follow-x': require('./xController').verifyXFollow,
   'quiz': async () => true // frontend-only task
 };
