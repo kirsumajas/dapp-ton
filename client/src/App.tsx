@@ -1,26 +1,35 @@
+// src/App.tsx
+import { useEffect, useState } from 'react';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import '@twa-dev/sdk';
-import Home from './pages/Home';
-import TasksPage from './pages/TasksPage';
-import Collection from './pages/Collection';
-import WalletPage from './pages/WalletPage';
-import AdminPage from './pages/AdminPage';
-
-
+import { BrowserRouter as Router } from 'react-router-dom';
+import AnimatedRoutes from './AnimatedRoutes';
+import SplashScreen from './components/SplashScreen';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+      // Wait 2 seconds after ready, then hide splash
+      const timeout = setTimeout(() => setShowSplash(false), 2000);
+      return () => clearTimeout(timeout);
+    } else {
+      // Fallback if Telegram is not available
+      const fallbackTimeout = setTimeout(() => setShowSplash(false), 2500);
+      return () => clearTimeout(fallbackTimeout);
+    }
+  }, []);
+
   return (
     <TonConnectUIProvider manifestUrl="https://kirsumajas.github.io/dapp-ton/tonconnect-manifest.json">
-      <Router basename="/dapp-ton">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tasks" element={<TasksPage />} />
-          <Route path="/collection" element={<Collection />} />
-          <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </Router>
+      {showSplash ? (
+        <SplashScreen />
+      ) : (
+        <Router basename="/dapp-ton">
+          <AnimatedRoutes />
+        </Router>
+      )}
     </TonConnectUIProvider>
   );
 }

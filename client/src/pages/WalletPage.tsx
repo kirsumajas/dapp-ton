@@ -2,11 +2,13 @@ import { useState } from 'react';
 import ConnectWalletButton from '../components/ConnectWalletButton';
 import PageLayout from '../components/PageLayout';
 import logo from '../assets/Logo.svg';
-import InAppCard from '../components/WalletPageComponents/InAppCard';
 import AlertModal from '../components/AlertModal';
 import StatsCard from '../components/WalletPageComponents/JettonCard';
 import TransactionHistory from '../components/WalletPageComponents/TransactionHistory';
+import InAppBalance from '../components/WalletPageComponents/InAppBalance';
 import { getTelegramUserId } from '../utils/getTelegramUser';
+
+
 
 export default function Wallet() {
   const [showAlert, setShowAlert] = useState(false);
@@ -22,6 +24,7 @@ export default function Wallet() {
     return <div className="text-white p-4">⚠️ Telegram ID not found.</div>;
   }
   return (
+  
     <PageLayout>
       {/* Header */}
       <section className="pt-[calc(env(safe-area-inset-top)+92px)] pb-4 px-3 flex items-center justify-between">
@@ -32,16 +35,17 @@ export default function Wallet() {
             className="w-[122px] h-[49px] object-contain"
           />
         </div>
-
-      {/* Wallet connect button */}
+        {/* Wallet connect button */}
         <ConnectWalletButton />
       </section>
-      
+
       {/* In-app balance card */}
-      <InAppCard balance={1000} onWithdraw={() => setShowAlert(true)} />
+      <InAppBalance />
+
       <TransactionHistory telegramId={telegramId} />
-      {/* Spacer */}
+
       <div className="h-[40px]"></div>
+
       <StatsCard
         price={0.005}
         liquidity={12000}
@@ -50,10 +54,8 @@ export default function Wallet() {
         onBuyClick={() => window.open('https://getgems.io/...', '_blank')}
       />
 
-      {/* Spacer */}
       <div className="h-[40px]"></div>
 
-      {/* Slide-up alert modal */}
       <AlertModal
         isOpen={showAlert}
         onClose={() => setShowAlert(false)}
@@ -63,8 +65,8 @@ export default function Wallet() {
         onConfirm={handleWithdraw}
       />
 
-      {/* Scroll buffer to avoid nav overlap */}
       <div className="h-[80px]"></div>
     </PageLayout>
+  
   );
 }

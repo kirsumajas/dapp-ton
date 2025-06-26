@@ -9,6 +9,8 @@ import XIconTasks from '../components/socialMediaIcons/XIconTasks';
 import TonQuizModal from '../components/TasksPageComponents/TonQuizModal';
 import { getTelegramUserId } from '../utils/getTelegramUser';
 
+
+
 type Task = {
   name: string;
   title: string;
@@ -40,16 +42,11 @@ const TasksPage = () => {
   }, [telegramId]);
 
   return (
+  
     <PageLayout>
       {/* Header */}
       <section className="pt-[calc(env(safe-area-inset-top)+92px)] pb-4 px-3 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <img
-            src={logo}
-            alt="ChopCoin Logo"
-            className="w-[122px] h-[49px] object-contain"
-          />
-        </div>
+        <img src={logo} alt="ChopCoin Logo" className="w-[122px] h-[49px] object-contain" />
         <ButtonCreateWallet className="w-[127px] h-[46px]" />
       </section>
 
@@ -79,11 +76,7 @@ const TasksPage = () => {
             <TaskCard
               key={task.name}
               icon={
-                task.name === 'subscribe-channel' ? (
-                  <TelegramIconTasks />
-                ) : (
-                  <XIconTasks />
-                )
+                task.name === 'subscribe-channel' ? <TelegramIconTasks /> : <XIconTasks />
               }
               title={task.title}
               reward={`${task.reward * 100} CHOP`}
@@ -104,8 +97,12 @@ const TasksPage = () => {
           console.log('✅ Quiz completed – reward logic comes next');
         }}
       />
+
+      <div className="h-[80px]"></div>
     </PageLayout>
-  );
+  
+);
+
 };
 
 export default TasksPage;
