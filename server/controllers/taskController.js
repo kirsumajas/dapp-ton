@@ -1,11 +1,11 @@
 const db = require('../db/db');
 const { rewardUserForTask } = require('../services/rewardService');
-
+const { isUserSubscribed } = require('./telegramController');
 // Optional task verification logic
 const verificationHandlers = {
-  'subscribe-channel': verifySubscriptionStatus,
+  'subscribe-channel': isUserSubscribed,
   'follow-x': require('./xController').verifyXFollow,
-  'quiz': async () => true // frontend-only task
+  'quiz': async () => true
 };
 
 exports.verifyAndRewardTask = async (req, res) => {
