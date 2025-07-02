@@ -30,6 +30,7 @@ const tasksRoutes = require('./routes/tasks');
 const adminRoutes = require('./routes/admin');
 const historyRoutes = require('./routes/history');
 const referralRoutes = require('./routes/referral');
+const walletRoutes = require('./routes/wallet');
 // Route Mounts
 app.use('/api/log', logRoute);
 // app.use('/api/x', xRoutes); ❌ Removed
@@ -43,6 +44,8 @@ app.use('/api/tasks', tasksRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/history', historyRoutes); // ✅
 app.use('/api/referral', referralRoutes);
+app.use('/api/wallet', walletRoutes);
+
 // Swagger config
 const swaggerOptions = {
   definition: {
