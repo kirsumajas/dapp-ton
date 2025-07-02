@@ -2,23 +2,36 @@ import { useTonConnectUI } from '@tonconnect/ui-react';
 import ButtonCreateWallet from './buttons/ButtonCreateWallet';
 import { useEffect } from 'react';
 import { useWalletStore } from '../store/walletStore';
+import { connectWalletAPI } from '../api/wallet';
+import { getTelegramUserId } from '../utils/getTelegramUser';
 
 export default function ConnectWalletButton() {
   const [tonConnectUI] = useTonConnectUI();
   const { address, setAddress } = useWalletStore();
 
   useEffect(() => {
-    // Set address on mount
     setAddress(tonConnectUI.account?.address ?? null);
 
-    // Subscribe to wallet changes
-    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
+    const unsubscribe = tonConnectUI.onStatusChange(async (wallet) => {
       const walletAddress = wallet?.account?.address ?? null;
       setAddress(walletAddress);
 
-      // Optional localStorage persist
       if (walletAddress) {
         localStorage.setItem('walletAddress', walletAddress);
+
+        // Send wallet to backend
+        const telegramId = getTelegramUserId();
+
+        if (telegramId) {
+          try {
+            const result = await connectWalletAPI(telegramId, walletAddress);
+            console.log('Wallet connected on backend:', result);
+          } catch (error) {
+            console.error('Error sending wallet to backend:', error);
+          }
+        } else {
+          console.error('Telegram user ID not found, cannot save wallet to backend.');
+        }
       } else {
         localStorage.removeItem('walletAddress');
       }
@@ -53,5 +66,7 @@ export default function ConnectWalletButton() {
     );
   }
 
-  return <ButtonCreateWallet onClick={handleConnect} className="w-[127px] h-[46px]" />;
+  return (
+    <ButtonCreateWallet onClick={handleConnect} className="w-[127px] h-[46px]" />
+  );
 }
