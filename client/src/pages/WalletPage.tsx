@@ -7,7 +7,7 @@ import StatsCard from '../components/WalletPageComponents/JettonCard';
 import TransactionHistory from '../components/WalletPageComponents/TransactionHistory';
 import InAppBalance from '../components/WalletPageComponents/InAppBalance';
 import { getTelegramUserId } from '../utils/getTelegramUser';
-
+import  WithdrawButton  from '../components/WalletPageComponents/WithdrawButton';
 
 
 export default function Wallet() {
@@ -38,7 +38,11 @@ export default function Wallet() {
         {/* Wallet connect button */}
         <ConnectWalletButton />
       </section>
-
+      <div className="p-4">
+        <h2 className="text-white text-lg mb-2">Withdraw your earnings</h2>
+        <WithdrawButton amount={0.5} />
+      </div>
+      
       {/* In-app balance card */}
       <InAppBalance />
 

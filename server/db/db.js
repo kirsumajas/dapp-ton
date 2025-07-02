@@ -16,9 +16,11 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     telegram_id TEXT PRIMARY KEY,
-    balance INTEGER DEFAULT 0
+    balance INTEGER DEFAULT 0,
+    referral_code TEXT UNIQUE
   );
 `);
+
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS withdrawals (
@@ -83,6 +85,18 @@ db.exec(`
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
+
+// Add this to your db.js after your existing db.exec calls
+db.exec(`
+  CREATE TABLE IF NOT EXISTS referrals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    referrer_telegram_id TEXT NOT NULL,
+    referred_telegram_id TEXT NOT NULL,
+    reward_given INTEGER DEFAULT 0,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
+
 
 module.exports = db;
  

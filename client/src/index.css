@@ -73,3 +73,11 @@ button {
 .scroll-x-no-bar::-webkit-scrollbar {
   display: none;
 }
+
+/* src/index.css */
+
+/* index.css */
+.safe-padding {
+  padding-top: max(65px, env(tg-content-safe-area-inset-top, 0px));
+  padding-bottom: calc(env(tg-content-safe-area-inset-bottom, 0px) + 16px);
+}
