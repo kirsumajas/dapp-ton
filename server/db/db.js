@@ -97,6 +97,30 @@ db.exec(`
   );
 `);
 
+// Transactions table to store all wallet TX history
+db.exec(`
+  CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    telegram_id TEXT,
+    wallet_address TEXT NOT NULL,
+    hash TEXT NOT NULL UNIQUE,
+    type TEXT CHECK(type IN ('sent', 'received')) NOT NULL,
+    amount REAL NOT NULL,
+    amount_raw TEXT,
+    counterparty TEXT,
+    timestamp INTEGER NOT NULL,
+    fees REAL DEFAULT 0,
+    fees_raw TEXT,
+    success INTEGER DEFAULT 0,
+    comment TEXT,
+    block_id TEXT,
+    lt TEXT,
+    account TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
+
+
 
 module.exports = db;
  

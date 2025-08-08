@@ -25,7 +25,7 @@ export default function PageLayout({ children, className = '' }: PageLayoutProps
     switch (platform) {
       case 'ios':
         return {
-          paddingTop: 'env(tg-content-safe-area-inset-top, 20px)',
+          paddingTop: 'env(tg-content-safe-area-inset-top, 100px)',
           paddingBottom: 'calc(env(tg-content-safe-area-inset-bottom, 0px) + 16px)',
         };
       case 'android':

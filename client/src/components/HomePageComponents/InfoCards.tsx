@@ -1,9 +1,16 @@
-export default function InfoCards() {
+interface InfoCardsProps {
+  onGraphCardClick?: () => void;
+}
+
+export default function InfoCards({ onGraphCardClick }: InfoCardsProps) {
   return (
     <div className="overflow-x-auto px-3 pb-6">
       <div className="flex gap-4 min-w-max">
         {/* Card 1: Tokenomics */}
-        <div className="min-w-[280px] min-h-[320px] bg-[#2e2c33] rounded-xl p-4 text-white flex flex-col justify-between">
+        <div
+          onClick={() => onGraphCardClick?.()}
+          className="cursor-pointer min-w-[280px] min-h-[320px] bg-[#2e2c33] rounded-xl p-4 text-white flex flex-col justify-between hover:bg-[#3b3941] transition"
+        >
           <h3 className="font-bold mb-2">Chopa tokenomics</h3>
           <img
             src="/assets/infocards/tokenomics.png"
@@ -12,7 +19,7 @@ export default function InfoCards() {
           />
         </div>
 
-        {/* Card 2: Who is Chopa */}
+        {/* Card 2 */}
         <div className="min-w-[280px] min-h-[320px] bg-[#2e2c33] rounded-xl p-4 text-white flex flex-col justify-between">
           <div>
             <h3 className="font-bold mb-2">Who is Chopa</h3>
@@ -27,7 +34,7 @@ export default function InfoCards() {
           />
         </div>
 
-        {/* Card 3: Strategy */}
+        {/* Card 3 */}
         <div className="min-w-[280px] min-h-[320px] bg-[#2e2c33] rounded-xl p-4 text-white flex flex-col justify-between">
           <h3 className="font-bold mb-2">Chopa strategy</h3>
           <img
