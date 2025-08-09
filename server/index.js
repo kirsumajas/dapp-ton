@@ -7,7 +7,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { initWebSocket } = require('./ws');
-const { startTransactionPoller } = require('./scripts/poller');
+const { startTransactionPoller } = require('./poller/transactionPoller');
 const debugRoutes = require('./routes/debug');
 
 const app = express();
