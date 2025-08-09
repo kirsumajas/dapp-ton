@@ -1,4 +1,3 @@
-// server/ws.js
 const WebSocket = require('ws');
 
 let wss;
@@ -16,9 +15,28 @@ function initWebSocket(server) {
 
     clients.set(telegramId, ws);
 
+    // Optional: ping-pong heartbeat to detect dead clients
+    ws.isAlive = true;
+    ws.on('pong', () => {
+      ws.isAlive = true;
+    });
+
     ws.on('close', () => {
       clients.delete(telegramId);
     });
+  });
+
+  // Ping clients every 30s to keep connection alive and remove dead clients
+  const interval = setInterval(() => {
+    wss.clients.forEach(ws => {
+      if (ws.isAlive === false) return ws.terminate();
+      ws.isAlive = false;
+      ws.ping();
+    });
+  }, 30000);
+
+  wss.on('close', () => {
+    clearInterval(interval);
   });
 }
 
