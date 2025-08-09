@@ -107,18 +107,18 @@ function startTransactionPoller(wss) {
   console.log(`⏳ Transaction poller started (interval ${POLL_INTERVAL_MS / 1000}s)`);
 
   setInterval(async () => {
-    // Fetch wallet addresses from DB
-    db.all(`SELECT DISTINCT wallet_address FROM wallet_links`, async (err, rows) => {
-      if (err) {
-        console.error('❌ Error fetching wallet list:', err.message);
-        return;
-      }
+    try {
+      // Fetch all distinct wallet addresses
+      const rows = db.prepare(`SELECT DISTINCT wallet_address FROM user_wallets`).all();
 
       for (const row of rows) {
         await fetchTransactionsForWallet(row.wallet_address, wss);
       }
-    });
+    } catch (err) {
+      console.error('❌ Error fetching wallet list:', err.message);
+    }
   }, POLL_INTERVAL_MS);
 }
+
 
 module.exports = { startTransactionPoller };
