@@ -9,6 +9,8 @@ const http = require('http');
 const { initWebSocket } = require('./ws');
 const { startTransactionPoller } = require('./poller/transactionPoller');
 const debugRoutes = require('./routes/debug');
+const dbDebugRoutes = require('./routes/dbDebug');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -31,6 +33,7 @@ app.use('/api/referral', require('./routes/referral'));
 app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/transactions', require('./routes/transactions'));
 app.use('/api/debug', debugRoutes);
+app.use('/api/db', dbDebugRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({

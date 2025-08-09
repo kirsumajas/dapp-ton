@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getDB } = require('../db/db');
-// const validateInitData = require('../middleware/validateInitData'); // Removed
+const db = require('../db/db');
 const rateLimiter = require('../middleware/rateLimiter');
+const fetch = require('node-fetch'); // Make sure node-fetch is installed if you use Node <18
 
 // Fetch transactions from TON blockchain APIs
 async function fetchTransactionsFromBlockchain(walletAddress, limit = 20) {
@@ -49,10 +49,10 @@ async function fetchTransactionsFromBlockchain(walletAddress, limit = 20) {
 function formatTransaction(tx) {
   const isIncoming = tx.in_msg && tx.in_msg.source;
   const isOutgoing = tx.out_msgs && tx.out_msgs.length > 0;
-  
+
   let amount = '0';
   let counterparty = '';
-  
+
   if (isIncoming && tx.in_msg) {
     amount = tx.in_msg.value || '0';
     counterparty = tx.in_msg.source || '';
@@ -83,20 +83,9 @@ router.get('/user/:telegram_id', rateLimiter, async (req, res) => {
   try {
     const { telegram_id } = req.params;
     const { limit = 20, offset = 0 } = req.query;
-    
-    const db = getDB();
-    
+
     // Get user's connected wallet
-    const wallet = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT wallet_address FROM users WHERE telegram_id = ?',
-        [telegram_id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
+    const wallet = db.prepare('SELECT wallet_address FROM users WHERE telegram_id = ?').get(telegram_id);
 
     if (!wallet || !wallet.wallet_address) {
       return res.status(404).json({ error: 'No wallet connected for this user' });
@@ -105,12 +94,12 @@ router.get('/user/:telegram_id', rateLimiter, async (req, res) => {
     // Fetch transactions from blockchain
     const transactions = await fetchTransactionsFromBlockchain(
       wallet.wallet_address,
-      parseInt(limit) + parseInt(offset) // Fetch more to handle offset
+      parseInt(limit) + parseInt(offset) // Fetch extra for pagination offset
     );
 
     // Format transactions
     const formattedTransactions = transactions.map(tx => formatTransaction(tx));
-    
+
     // Apply pagination
     const startIndex = parseInt(offset);
     const endIndex = startIndex + parseInt(limit);
@@ -126,9 +115,9 @@ router.get('/user/:telegram_id', rateLimiter, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching user transactions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch transactions',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -143,11 +132,7 @@ router.get('/wallet/:wallet_address', rateLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Wallet address is required' });
     }
 
-    const transactions = await fetchTransactionsFromBlockchain(
-      wallet_address,
-      parseInt(limit)
-    );
-
+    const transactions = await fetchTransactionsFromBlockchain(wallet_address, parseInt(limit));
     const formattedTransactions = transactions.map(tx => formatTransaction(tx));
 
     res.json({
@@ -159,9 +144,9 @@ router.get('/wallet/:wallet_address', rateLimiter, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching wallet transactions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch transactions',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -171,7 +156,6 @@ router.get('/details/:hash', rateLimiter, async (req, res) => {
   try {
     const { hash } = req.params;
 
-    // Fetch from TON API
     const response = await fetch(
       `https://tonapi.io/v2/transactions/${hash}`,
       {
@@ -195,9 +179,9 @@ router.get('/details/:hash', rateLimiter, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching transaction details:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch transaction details',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -206,19 +190,9 @@ router.get('/details/:hash', rateLimiter, async (req, res) => {
 router.get('/balance/:telegram_id', rateLimiter, async (req, res) => {
   try {
     const { telegram_id } = req.params;
-    const db = getDB();
 
     // Get user's wallet
-    const user = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT wallet_address FROM users WHERE telegram_id = ?',
-        [telegram_id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
+    const user = db.prepare('SELECT wallet_address FROM users WHERE telegram_id = ?').get(telegram_id);
 
     if (!user || !user.wallet_address) {
       return res.status(404).json({ error: 'No wallet connected' });
@@ -237,7 +211,7 @@ router.get('/balance/:telegram_id', rateLimiter, async (req, res) => {
     }
 
     const data = await response.json();
-    
+
     res.json({
       success: true,
       wallet_address: user.wallet_address,
@@ -248,9 +222,9 @@ router.get('/balance/:telegram_id', rateLimiter, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching wallet balance:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch balance',
-      details: error.message 
+      details: error.message
     });
   }
 });
