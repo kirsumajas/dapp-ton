@@ -174,7 +174,7 @@ router.get('/wallet/:wallet_address', validateInitData, rateLimiter, async (req,
 // Get transaction details by hash
 
 // Get transaction details by hash
-router.get('/details/:hash', validateInitData, rateLimiter, async (req, res) => {
+router.get('/details/:hash', rateLimiter, async (req, res) => {
   try {
     const { hash } = req.params;
 
