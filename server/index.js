@@ -7,7 +7,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { initWebSocket } = require('./ws');
-const { startPoller } = require('./scripts/poller');
+const { startTransactionPoller } = require('./scripts/poller');
 const debugRoutes = require('./routes/debug');
 
 const app = express();
@@ -51,6 +51,6 @@ server.listen(PORT, () => {
 });
 
 initWebSocket(server);
-startPoller();
+startTransactionPoller();
 
 module.exports = app;
