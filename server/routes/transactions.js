@@ -1,11 +1,8 @@
-// server/routes/transactions.js
 const express = require('express');
 const router = express.Router();
 const { getDB } = require('../db/db');
-const validateInitData = require('../middleware/validateInitData');
+// const validateInitData = require('../middleware/validateInitData'); // Removed
 const rateLimiter = require('../middleware/rateLimiter');
-
-// Get transaction history for a user
 
 // Fetch transactions from TON blockchain APIs
 async function fetchTransactionsFromBlockchain(walletAddress, limit = 20) {
@@ -82,7 +79,7 @@ function formatTransaction(tx) {
 }
 
 // Get transactions for a user's connected wallet
-router.get('/user/:telegram_id', validateInitData, rateLimiter, async (req, res) => {
+router.get('/user/:telegram_id', rateLimiter, async (req, res) => {
   try {
     const { telegram_id } = req.params;
     const { limit = 20, offset = 0 } = req.query;
@@ -137,9 +134,7 @@ router.get('/user/:telegram_id', validateInitData, rateLimiter, async (req, res)
 });
 
 // Get transactions by wallet address directly
-
-// Get transactions by wallet address directly
-router.get('/wallet/:wallet_address', validateInitData, rateLimiter, async (req, res) => {
+router.get('/wallet/:wallet_address', rateLimiter, async (req, res) => {
   try {
     const { wallet_address } = req.params;
     const { limit = 20 } = req.query;
@@ -170,8 +165,6 @@ router.get('/wallet/:wallet_address', validateInitData, rateLimiter, async (req,
     });
   }
 });
-
-// Get transaction details by hash
 
 // Get transaction details by hash
 router.get('/details/:hash', rateLimiter, async (req, res) => {
@@ -210,9 +203,7 @@ router.get('/details/:hash', rateLimiter, async (req, res) => {
 });
 
 // Get wallet balance for user
-
-// Get wallet balance
-router.get('/balance/:telegram_id', validateInitData, rateLimiter, async (req, res) => {
+router.get('/balance/:telegram_id', rateLimiter, async (req, res) => {
   try {
     const { telegram_id } = req.params;
     const db = getDB();
