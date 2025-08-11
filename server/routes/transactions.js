@@ -84,8 +84,8 @@ router.get('/user/:telegram_id', rateLimiter, async (req, res) => {
     const { telegram_id } = req.params;
     const { limit = 20, offset = 0 } = req.query;
 
-    // Get user's connected wallet
-    const wallet = db.prepare('SELECT wallet_address FROM users WHERE telegram_id = ?').get(telegram_id);
+    // Get user's connected wallet from the user_wallets table
+    const wallet = db.prepare('SELECT wallet_address FROM user_wallets WHERE telegram_id = ?').get(telegram_id);
 
     if (!wallet || !wallet.wallet_address) {
       return res.status(404).json({ error: 'No wallet connected for this user' });
@@ -191,8 +191,8 @@ router.get('/balance/:telegram_id', rateLimiter, async (req, res) => {
   try {
     const { telegram_id } = req.params;
 
-    // Get user's wallet
-    const user = db.prepare('SELECT wallet_address FROM users WHERE telegram_id = ?').get(telegram_id);
+    // Get user's wallet from user_wallets table
+    const user = db.prepare('SELECT wallet_address FROM user_wallets WHERE telegram_id = ?').get(telegram_id);
 
     if (!user || !user.wallet_address) {
       return res.status(404).json({ error: 'No wallet connected' });
